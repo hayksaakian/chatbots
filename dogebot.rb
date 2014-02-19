@@ -10,7 +10,7 @@ bot = Cinch::Bot.new do
     # c.nick = "DogeBot"
     # c.channels = ["#cinch-bots"]
     c.server = "irc.rizon.net"
-    c.nick = "DogeBot"
+    c.nick = "DestinyDogeBot"
     c.channels = ["#destinyecho"]
     c.plugins.plugins = [DogebotPlugin]
   end
