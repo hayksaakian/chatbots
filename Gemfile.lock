@@ -1,0 +1,12 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cinch (2.0.12)
+    rb-appscript (0.6.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  cinch
+  rb-appscript
