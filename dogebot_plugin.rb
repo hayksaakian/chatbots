@@ -76,7 +76,7 @@ class DogebotPlugin
     output << price.to_s
     output << suffix
     if !cached.nil? and !jsn.nil? and jsn != cached
-      delta = jsn["avg_price"] - cached["avg_price"]
+      delta = jsn["avg_price"].to_f - cached["avg_price"].to_f
       if delta != 0
         s = delta > 0 ? "SoDoge such increase. To the MOON!" : "SoSad bad SoDoge"
         output << "+" if delta > 0
