@@ -33,6 +33,26 @@ class DogebotPlugin
   match /(doge|dgc)/i
 
   def check(query)
+    return trycheck(query)
+  rescue Exception => e
+    puts e.message
+    puts e.backtrace.join("\n")
+    m = e.message
+    " is SoSad . Bad SoDoge!! tell hephaestus something broke. Exception: #{m.to_s}"
+  end
+
+  def execute(m, query)
+    puts 'got message!'
+    last_time = @last_time || 0
+    now = Time.now.to_i
+    if now - last_time > RATE_LIMIT
+      @last_time = now
+      m.reply check(query)
+    end
+  end
+
+  private
+  def trycheck(query)
     output = "US$"
     cached = getcached(DOGECOIN_ENDPOINT)
     # expire cache if...
@@ -67,25 +87,8 @@ class DogebotPlugin
     output << " as of "
     output << Time.at(jsn["date"]).to_s
     return output
-  rescue Exception => e
-    puts e.message
-    puts e.backtrace.join("\n")
-    m = e.message
-    " is SoSad . Bad SoDoge!! tell hephaestus something broke. Exception: #{m.to_s}"
   end
 
-  def execute(m, query)
-    puts 'got message!'
-    last_time = @last_time || 0
-    now = Time.now.to_i
-    if now - last_time > RATE_LIMIT
-      @last_time = now
-      m.reply check(query)
-    end
-  end
-
-
-  private
   def getjson(url)
     content = open(url).read
     return JSON.parse(content)

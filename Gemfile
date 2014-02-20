@@ -7,4 +7,5 @@ ruby '2.0.0'
 gem 'cinch'
 
 gem 'nokogiri', '~> 1.6.0'
+gem 'faye-websocket'
 
