@@ -56,7 +56,7 @@ class DogebotPlugin
     output = "US$"
     cached = getcached(DOGECOIN_ENDPOINT)
     # expire cache if...
-    if cached.nil? or (cached["date"] > (Time.now.to_i - CACHE_DURATION))
+    if cached.nil? or cached["date"] < Time.now.to_i - CACHE_DURATION
       jsn = getjson(DOGECOIN_ENDPOINT)
       if jsn.nil?
         raise "Failed to GET price from Vault of Satoshi API"
