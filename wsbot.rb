@@ -37,12 +37,15 @@ EM.run {
         if event.data.include? "duplicate"
           suffix = " OverRustle x #{(Random.rand*100000).to_s}"
         end
+        p_message = "!doge"
+      else
+        proper_message = event.data.split(" ")
+        proper_message.shift
+        proper_message = proper_message.join(" ")
+        parsed_message = JSON.parse(proper_message)
+        p_message = parsed_message["data"]
+          
       end
-      proper_message = event.data.split(" ")
-      proper_message.shift
-      proper_message = proper_message.join(" ")
-      parsed_message = JSON.parse(proper_message)
-      p_message = parsed_message["data"]
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if fetcher.ready
           price = fetcher.check(p_message)
