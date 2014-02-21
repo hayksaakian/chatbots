@@ -13,7 +13,7 @@ OPTIONS = {headers:{
 CMD_REGEX = /^!(doge|dgc| SoDoge|SoDoge)/i
 
 fetcher = DogeFetcher.new
-
+reconnects = 0
 # puts fetcher.trycheck("")
 
 EM.run {
@@ -21,6 +21,7 @@ EM.run {
 
   ws.on :open do |event|
     p [:open]
+    reconnects = 0
     # ws.send('Hello, world!')
   end
 
@@ -62,6 +63,11 @@ EM.run {
   ws.on :close do |event|
     p [:close, event.code, event.reason]
     ws = nil
+    if event.code = 1006 and reconnects < 4
+      sleep 1
+      reconnects += 1
+      ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
+    end
   end
 
   ws.on :event do |event|
