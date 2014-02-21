@@ -33,7 +33,7 @@ EM.run {
       ws.send("PONG "+event.data[5..event.data.length])
     elsif event.data.match /^(ERR|MSG)/
       suffix = ""
-      if event.data.includes?("ERR") 
+      if event.data.include?("ERR") 
         if event.data.include? "duplicate"
           suffix = " OverRustle x #{(Random.rand*100000).to_s}"
         end
