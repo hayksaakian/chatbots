@@ -38,7 +38,7 @@ EM.run {
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if fetcher.ready
           price = fetcher.check(p_message)
-          price << " also #{Random.rand.to_s} is a cool number"
+          # price << " also #{Random.rand.to_s} is a cool number"
           jsn = {data: price}
           ws.send("MSG "+jsn.to_json)
           p "!!! SENDING DATA !!!"
