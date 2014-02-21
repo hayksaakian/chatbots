@@ -33,8 +33,8 @@ EM.run {
       ws.send("PONG "+event.data[5..event.data.length])
     elsif event.data.match /^(ERR|MSG)/
       suffix = ""
-      if event.data.include?("ERR") 
-        if event.data.include? "duplicate"
+      if event.data.match /^ERR/
+        if event.data.match "duplicate"
           suffix = " OverRustle x #{(Random.rand*100000).to_s}"
         end
         p_message = "!doge"
@@ -44,7 +44,6 @@ EM.run {
         proper_message = proper_message.join(" ")
         parsed_message = JSON.parse(proper_message)
         p_message = parsed_message["data"]
-          
       end
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if fetcher.ready
