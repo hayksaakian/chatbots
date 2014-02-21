@@ -10,7 +10,7 @@ OPTIONS = {headers:{
   "Origin" => "*"
   }}
 
-CMD_REGEX = /^!(doge|dgc)/i
+CMD_REGEX = /^!(doge|dgc| SoDoge|SoDoge)/i
 
 fetcher = DogeFetcher.new
 
