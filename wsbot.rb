@@ -27,9 +27,17 @@ EM.run {
   ws.on :message do |event|
     p [:message, event.data]
     # used to 
-    if event.data.match /^PING/
+    if event.data.nil?
+      p [:error, event.to_s]
+    elsif event.data.match /^PING/
       ws.send("PONG "+event.data[5..event.data.length])
-    elsif event.data.match /^(MSG)/
+    elsif event.data.match /^(ERR|MSG)/
+      suffix = ""
+      if event.data.includes?("ERR") 
+        if event.data.include? "duplicate"
+          suffix = " OverRustle x #{(Random.rand*100000).to_s}"
+        end
+      end
       proper_message = event.data.split(" ")
       proper_message.shift
       proper_message = proper_message.join(" ")
@@ -38,7 +46,7 @@ EM.run {
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if fetcher.ready
           price = fetcher.check(p_message)
-          # price << " also #{Random.rand.to_s} is a cool number"
+          price << suffix
           jsn = {data: price}
           ws.send("MSG "+jsn.to_json)
           p "!!! SENDING DATA !!!"
