@@ -1,7 +1,11 @@
 require 'faye/websocket'
 require 'json'
 require 'eventmachine'
+
 require_relative 'doge_fetcher'
+CMD_REGEX = /^!(doge|dgc| SoDoge|SoDoge)/i
+fetcher = DogeFetcher.new
+
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
@@ -10,9 +14,6 @@ OPTIONS = {headers:{
   "Origin" => "*"
   }}
 
-CMD_REGEX = /^!(doge|dgc| SoDoge|SoDoge)/i
-
-fetcher = DogeFetcher.new
 reconnects = 0
 # puts fetcher.trycheck("")
 
@@ -36,10 +37,9 @@ EM.run {
       suffix = ""
       p_message = ""
       if event.data.match /^ERR/
-        if event.data.match "duplicate"
+        if event.data.match /duplicate/
           suffix = " OverRustle x #{(Random.rand*100000).to_s}"
         end
-        p_message = "!doge"
       else
         proper_message = event.data.split(" ")
         proper_message.shift
@@ -49,9 +49,9 @@ EM.run {
       end
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if fetcher.ready
-          price = fetcher.check(p_message)
-          price << suffix
-          jsn = {data: price}
+          result = fetcher.check(p_message)
+          result << suffix
+          jsn = {data: result}
           ws.send("MSG "+jsn.to_json)
           p "!!! SENDING DATA !!!"
         else
