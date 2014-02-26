@@ -2,8 +2,8 @@ require 'faye/websocket'
 require 'json'
 require 'eventmachine'
 
-require_relative 'doge_fetcher'
-chatbot = DogeFetcher.new
+require_relative 'roulette'
+chatbot = Roulette.new
 
 CMD_REGEX = chatbot.regex
 
@@ -42,6 +42,7 @@ EM.run {
           suffix = " OverRustle x #{(Random.rand*100000).to_s}"
         end
       else
+        # removes their name from the message, i think?
         proper_message = event.data.split(" ")
         proper_message.shift
         proper_message = proper_message.join(" ")
