@@ -3,20 +3,20 @@ require 'json'
 require 'eventmachine'
 
 require_relative 'doge_fetcher'
-fetcher = DogeFetcher.new
+chatbot = DogeFetcher.new
 
-CMD_REGEX = fetcher.regex
+CMD_REGEX = chatbot.regex
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 # note cookie lasts 1 month, look into using API somehow
 OPTIONS = {headers:{
-  "Cookie" => "sid=524e32120bbf63aa0ff74c13b9576613; rememberme=%7B%22expire%22%3A1396003992%2C%22created%22%3A1393411992%2C%22token%22%3A%22d32a8e3ae8531df0a6b10f1878e92e2c%22%7D; __utma=101017095.246060167.1393411958.1393411958.1393411958.1; __utmb=101017095.3.10.1393411958; __utmc=101017095; __utmz=101017095.1393411958.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)"
+  "Cookie" => "sid=524e32120bbf63aa0ff74c13b9576613; rememberme=%7B%22expire%22%3A1396003992%2C%22created%22%3A1393411992%2C%22token%22%3A%22d32a8e3ae8531df0a6b10f1878e92e2c%22%7D; __utma=101017095.246060167.1393411958.1393411958.1393411958.1; __utmb=101017095.3.10.1393411958; __utmc=101017095; __utmz=101017095.1393411958.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
   "Origin" => "*"
   }}
 
 reconnects = 0
-# puts fetcher.trycheck("")
+# puts chatbot.trycheck("")
 
 EM.run {
   ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
@@ -49,8 +49,8 @@ EM.run {
         p_message = parsed_message["data"]
       end
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
-        if fetcher.ready
-          result = fetcher.check(p_message)
+        if chatbot.ready
+          result = chatbot.check(p_message)
           result << suffix
           jsn = {data: result}
           ws.send("MSG "+jsn.to_json)
