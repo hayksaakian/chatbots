@@ -15,6 +15,7 @@ APP_ROOT = File.expand_path(File.dirname(__FILE__))
 CACHE_FILE = APP_ROOT+"/cache/"
 
 class DogeFetcher
+  attr_accesor :regex
   def initialize
     @regex = /^!(doge|dgc| SoDoge|SoDoge)/i
   end
