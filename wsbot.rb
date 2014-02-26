@@ -3,12 +3,13 @@ require 'json'
 require 'eventmachine'
 
 require_relative 'doge_fetcher'
-CMD_REGEX = /^!(doge|dgc| SoDoge|SoDoge)/i
 fetcher = DogeFetcher.new
 
+CMD_REGEX = fetcher.regex
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
+# note cookie lasts 1 month, look into using API somehow
 OPTIONS = {headers:{
   "Cookie" => "sid=2f96b1ed32a6aabad92a0c42c1819c35; rememberme=%7B%22expire%22%3A1395532139%2C%22created%22%3A1392940139%2C%22token%22%3A%224f3f976a25ac6da24e940d9e9a238f5e%22%7D; __utma=101017095.589024420.1392939653.1392939653.1392939653.1; __utmb=101017095.8.10.1392939653; __utmc=101017095; __utmz=101017095.1392939653.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
   "Origin" => "*"

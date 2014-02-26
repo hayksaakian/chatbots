@@ -16,6 +16,7 @@ CACHE_FILE = APP_ROOT+"/cache/"
 
 class DogeFetcher
   def initialize
+    @regex = /^!(doge|dgc| SoDoge|SoDoge)/i
   end
   def ready
     last_time = @last_time || 0
