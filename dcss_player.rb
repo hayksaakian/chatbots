@@ -14,7 +14,7 @@ APP_ROOT = File.expand_path(File.dirname(__FILE__))
 CACHE_FILE = APP_ROOT+"/cache/"
 
 
-class DogeFetcher
+class DcssPlayer
   attr_accessor :regex
   def initialize
     re = "("+LONGER_COMMANDS.join("|")+")"
