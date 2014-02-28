@@ -14,7 +14,7 @@ WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 # note cookie lasts 1 month, look into using API somehow
 OPTIONS = {headers:{
-  "Cookie" => "__utma=16313635.1862555919.1372040766.1372040766.1372040766.1; __utmc=16313635; sid=de56151115cd77154d5c8f231880a28a; rememberme=%7B%22expire%22%3A1396164242%2C%22created%22%3A1393572242%2C%22token%22%3A%22869a1e12c83bc324b0b649e010aacae2%22%7D; __utma=101017095.2025998726.1387259362.1393438259.1393572259.80; __utmb=101017095.1.10.1393572259; __utmc=101017095; __utmz=101017095.1390253874.38.4.utmcsr=reddit.com|utmccn=(referral)|utmcmd=referral|utmcct=/r/Destiny/",
+  "Cookie" => "sid=72b67fdbf9cb1ce2ffb5d2e8fcfb7443; rememberme=%7B%22expire%22%3A1396165082%2C%22created%22%3A1393573082%2C%22token%22%3A%22869ce5675adb26f82fad8f11d5045e61%22%7D; __utma=101017095.1366955240.1393573035.1393573035.1393573035.1; __utmb=101017095.4.10.1393573035; __utmc=101017095; __utmz=101017095.1393573035.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
   "Origin" => "*"
   }}
 
