@@ -2,8 +2,11 @@ require 'faye/websocket'
 require 'json'
 require 'eventmachine'
 
-require_relative 'roulette'
-chatbot = Roulette.new
+# require_relative 'roulette'
+# chatbot = Roulette.new
+
+require_relative 'dcss_player'
+chatbot = DcssPlayer.new
 
 CMD_REGEX = chatbot.regex
 
@@ -11,7 +14,7 @@ WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 # note cookie lasts 1 month, look into using API somehow
 OPTIONS = {headers:{
-  "Cookie" => "sid=524e32120bbf63aa0ff74c13b9576613; rememberme=%7B%22expire%22%3A1396003992%2C%22created%22%3A1393411992%2C%22token%22%3A%22d32a8e3ae8531df0a6b10f1878e92e2c%22%7D; __utma=101017095.246060167.1393411958.1393411958.1393411958.1; __utmb=101017095.3.10.1393411958; __utmc=101017095; __utmz=101017095.1393411958.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
+  "Cookie" => "__utma=16313635.1862555919.1372040766.1372040766.1372040766.1; __utmc=16313635; sid=de56151115cd77154d5c8f231880a28a; rememberme=%7B%22expire%22%3A1396164242%2C%22created%22%3A1393572242%2C%22token%22%3A%22869a1e12c83bc324b0b649e010aacae2%22%7D; __utma=101017095.2025998726.1387259362.1393438259.1393572259.80; __utmb=101017095.1.10.1393572259; __utmc=101017095; __utmz=101017095.1390253874.38.4.utmcsr=reddit.com|utmccn=(referral)|utmcmd=referral|utmcct=/r/Destiny/",
   "Origin" => "*"
   }}
 
@@ -39,7 +42,7 @@ EM.run {
       p_message = ""
       if event.data.match /^ERR/
         if event.data.match /duplicate/
-          suffix = " OverRustle x #{(Random.rand*100000).to_s}"
+          # suffix = " OverRustle x #{(Random.rand*100000).to_s}"
         end
       else
         # removes their name from the message, i think?
@@ -52,10 +55,14 @@ EM.run {
       if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if chatbot.ready
           result = chatbot.check(p_message)
-          result << suffix
-          jsn = {data: result}
-          ws.send("MSG "+jsn.to_json)
-          p "!!! SENDING DATA !!!"
+          if !result.nil? and result.length > 0
+            result << suffix
+            jsn = {data: result}
+            ws.send("MSG "+jsn.to_json)
+            p "!!! SENDING DATA !!!"
+          else
+            p "nothing to send for #{p_message}"
+          end
         else
         end
       end
