@@ -12,7 +12,7 @@ class DcssPlayerPlugin
   match /.*/i
 
   def check(query)
-    return FETCHER.check(query)
+    # return FETCHER.check(query)
   end
 
   def execute(m, query)
