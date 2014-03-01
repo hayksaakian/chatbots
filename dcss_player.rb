@@ -34,7 +34,7 @@ class DcssPlayer
     query = query.match(@regex).to_s
     return nil if query == "" or query == nil
     return trycheck("escape") if @last_move == "*" and query == "q"
-    return trycheck("escape") if @last_move == "S" and (query == "Y")
+    return trycheck("N") if @last_move == "S" and (query != "Y")
     return trycheck(query)
   rescue Exception => e
     puts e.message
