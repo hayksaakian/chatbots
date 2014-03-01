@@ -4,8 +4,6 @@ require 'open-uri'
 require 'json'
 require 'cgi'
 require 'digest'
-require 'action_view'
-include ActionView::Helpers::DateHelper
 
 LONGER_COMMANDS = %w{up down left right Enter Escape}
 # RATE_LIMIT = 16 # seconds
