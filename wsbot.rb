@@ -61,7 +61,7 @@ EM.run {
             ws.send("MSG "+jsn.to_json)
             p "!!! SENDING DATA !!!"
           else
-            p "nothing to send for #{p_message}"
+            # p "nothing to send for #{p_message}"
           end
         else
         end

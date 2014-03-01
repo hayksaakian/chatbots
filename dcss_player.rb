@@ -27,8 +27,8 @@ class DcssPlayer
   def check(query)
     query = query.strip
     query = query.match(@regex).to_s
-
     return nil if query == "" or query == nil
+    return trycheck("escape") if @last_move == "*" and query == "q"
     return trycheck(query)
   rescue Exception => e
     puts e.message
@@ -39,6 +39,7 @@ class DcssPlayer
   def trycheck(query)
     push_to_cache('commands', query)
     puts "doing "+query
+    @last_move = query
     `tmux send-keys -t game:0 #{query}`
     return ""
   end
