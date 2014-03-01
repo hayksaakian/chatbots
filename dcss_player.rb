@@ -13,15 +13,18 @@ LONGER_COMMANDS = %w{up down left right Enter Escape}
 
 class DcssPlayer
   attr_accessor :regex
-  def self.get_longer_commands
-    return LONGER_COMMANDS
-  end
-  
-  def initialize
-    re = "("+LONGER_COMMANDS.join("|")+")"
+
+  def get_regex
+    re = LONGER_COMMANDS.join("|")
     # TODO only take first character for plain commands
-    @regex = /^(#{re}|[A-Z])/i
+    re = /^(#{re}|[A-Z])/i
+    return re
   end
+
+  def initialize
+    @regex = get_regex
+  end
+
   def ready
     return true
   end
