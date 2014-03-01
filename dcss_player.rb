@@ -29,10 +29,12 @@ class DcssPlayer
     return true
   end
   def check(query)
+    query = query.downcase
     query = query.strip
     query = query.match(@regex).to_s
     return nil if query == "" or query == nil
     return trycheck("escape") if @last_move == "*" and query == "q"
+    return trycheck("escape") if @last_move == "s" and (query == "y" or query == "n")
     return trycheck(query)
   rescue Exception => e
     puts e.message
