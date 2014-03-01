@@ -63,7 +63,6 @@ EM.run {
           else
             # p "nothing to send for #{p_message}"
           end
-        else
         end
       end
     end
