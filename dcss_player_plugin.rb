@@ -11,8 +11,8 @@ class DcssPlayerPlugin
   match RE, use_prefix: false
 
   def check(query)
-    # return FETCHER.check(query)
-    query
+    return FETCHER.check(query)
+    # query
   end
 
   def execute(m)
