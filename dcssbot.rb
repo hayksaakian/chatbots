@@ -11,6 +11,7 @@ bot = Cinch::Bot.new do
     # c.channels = ["#cinch-bots"]
     c.server = "irc.twitch.tv"
     c.nick = "1337hephaestus"
+    c.user = "1337hephaestus"
     c.password = ENV['TWITCH_OAUTH_TOKEN']
     c.channels = ["#1337hephaestus"]
     c.plugins.plugins = [DcssPlayerPlugin]

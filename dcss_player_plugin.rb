@@ -4,18 +4,19 @@ require 'cinch'
 require_relative 'dcss_player'
 
 FETCHER = DcssPlayer.new
+RE = DcssPlayer.get_longer_commands.join("|")
 
 class DcssPlayerPlugin
   include Cinch::Plugin
-  match FETCHER.regex
+  match /(#{RE}|[A-Z])/i
 
   def check(query)
-    FETCHER.check(query)
+    return FETCHER.check(query)
   end
 
   def execute(m, query)
     if FETCHER.ready
-      result = FETCHER.check(p_message)
+      result = check(p_message)
       if !result.nil? and result.length > 0
         result << suffix
         m.reply result

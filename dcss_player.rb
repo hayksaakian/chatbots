@@ -5,15 +5,18 @@ require 'json'
 require 'cgi'
 require 'digest'
 
-LONGER_COMMANDS = %w{up down left right Enter Escape}
 # RATE_LIMIT = 16 # seconds
 # CACHE_DURATION = 60 #seconds
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 CACHE_FILE = APP_ROOT+"/cache/"
-
+LONGER_COMMANDS = %w{up down left right Enter Escape}
 
 class DcssPlayer
   attr_accessor :regex
+  def self.get_longer_commands
+    return LONGER_COMMANDS
+  end
+  
   def initialize
     re = "("+LONGER_COMMANDS.join("|")+")"
     # TODO only take first character for plain commands
