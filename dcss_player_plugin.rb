@@ -8,7 +8,8 @@ RE = DcssPlayer.get_longer_commands.join("|")
 
 class DcssPlayerPlugin
   include Cinch::Plugin
-  match /(#{RE}|[A-Z])/i
+  # match /(#{RE}|[A-Z])/i
+  match /.*/i
 
   def check(query)
     return FETCHER.check(query)
