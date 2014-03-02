@@ -9,7 +9,7 @@ require 'digest'
 # CACHE_DURATION = 60 #seconds
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
 CACHE_FILE = APP_ROOT+"/cache/"
-LONGER_COMMANDS = %w{up down left right enter escape fire}
+LONGER_COMMANDS = %w{up down left right enter escape f}
 
 class DcssPlayer
   attr_accessor :regex
