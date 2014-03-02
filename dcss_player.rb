@@ -45,6 +45,7 @@ class DcssPlayer
     tms = 1
     if LONGER_COMMANDS.include?(query) and rawquery.length > query.length
       num = rawquery[query.length..query.length]
+      puts "got num: #{num}"
       if num.to_i > 0
         tms = num.to_i
         puts "#{num} times"
