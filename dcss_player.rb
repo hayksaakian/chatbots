@@ -15,9 +15,8 @@ class DcssPlayer
   attr_accessor :regex
 
   def get_regex
-    re = LONGER_COMMANDS.join("|")
     # TODO only take first character for plain commands
-    re = /^(#{re}|[A-Z])/i
+    re = /^(#{LONGER_COMMANDS.join("|")}|[A-Z]|.)/i
     return re
   end
 
