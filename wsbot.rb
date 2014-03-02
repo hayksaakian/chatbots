@@ -40,9 +40,13 @@ EM.run {
     elsif event.data.match /^(ERR|MSG)/
       suffix = ""
       p_message = ""
+      baderror = false
       if event.data.match /^ERR/
         if event.data.match /duplicate/
           # suffix = " OverRustle x #{(Random.rand*100000).to_s}"
+        end
+        if event.data.match /needlogin/
+          baderror = true
         end
       else
         # removes their name from the message, i think?
@@ -52,7 +56,7 @@ EM.run {
         parsed_message = JSON.parse(proper_message)
         p_message = parsed_message["data"]
       end
-      if !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
+      if !baderror and !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
         if chatbot.ready
           result = chatbot.check(p_message)
           if !result.nil? and result.length > 0
