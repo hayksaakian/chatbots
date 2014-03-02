@@ -44,7 +44,7 @@ class DcssPlayer
     @last_move = query
     tms = 1
     if LONGER_COMMANDS.include?(query) and rawquery.length > query.length
-      num = rawquery[query.length-1..query.length]
+      num = rawquery[query.length..query.length]
       if num.to_i > 0
         tms = num.to_i
         puts "#{num} times"
