@@ -33,15 +33,15 @@ class DcssPlayer
     query = query.strip
     rawquery = query
     query = query.match(@regex).to_s
-    return nil if query == "" or query == nil
-    return trycheck("escape") if @last_move == "*" and query == "q"
-    return trycheck("N") if @last_move == "S"
     if query == "esc"
       query = "escape"
     end
     push_to_cache('commands', query)
     puts "doing "+query
     @last_move = query
+    return nil if query == "" or query == nil
+    return check("escape") if @last_move == "*" and query == "q"
+    return check("N") if @last_move == "S"
     tms = 1
     if LONGER_COMMANDS.include?(query) and rawquery.length > query.length
       num = rawquery[query.length..query.length]
