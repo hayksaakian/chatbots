@@ -31,10 +31,28 @@ class DcssPlayer
   def check(query)
     # query = query.downcase # breaks some commands
     query = query.strip
+    rawquery = query
     query = query.match(@regex).to_s
     return nil if query == "" or query == nil
     return trycheck("escape") if @last_move == "*" and query == "q"
     return trycheck("N") if @last_move == "S"
+    if query == "esc"
+      query = "escape"
+    end
+    push_to_cache('commands', query)
+    puts "doing "+query
+    @last_move = query
+    tms = 1
+    if LONGER_COMMANDS.include?(query) and rawquery.length > query.length
+      num = rawquery[query.length-1..query.length]
+      if num.to_i > 0
+        tms = num.to_i
+        puts "#{num} times"
+      end
+    end
+    (tms-1).times do
+      trycheck(query)
+    end
     return trycheck(query)
   rescue Exception => e
     puts e.message
@@ -43,9 +61,6 @@ class DcssPlayer
     " is SoSad . Bad SoDoge!! tell hephaestus something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
-    push_to_cache('commands', query)
-    puts "doing "+query
-    @last_move = query
     `tmux send-keys -t game:0 #{query}`
     return ""
   end
