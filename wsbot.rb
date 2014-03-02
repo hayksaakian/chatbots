@@ -59,7 +59,7 @@ EM.run {
             result << suffix
             jsn = {data: result}
             ws.send("MSG "+jsn.to_json)
-            p "!!! SENDING DATA !!!"
+            p "!!! SENDING DATA !!! #{result}"
           else
             # p "nothing to send for #{p_message}"
           end
