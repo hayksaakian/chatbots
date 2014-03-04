@@ -5,6 +5,10 @@ require 'json'
 require 'cgi'
 require 'digest'
 
+# TODO handle death
+# enter, enter, enter
+# p, sleep1, !, enter
+
 # RATE_LIMIT = 16 # seconds
 # CACHE_DURATION = 60 #seconds
 APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -63,6 +67,9 @@ class DcssPlayer
     " is SoSad . Bad SoDoge!! tell hephaestus something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
+    if query == ">"
+      query = "\>"
+    end
     `tmux send-keys -t game:0 #{query}`
     return ""
   end
