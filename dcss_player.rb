@@ -67,10 +67,7 @@ class DcssPlayer
     " is SoSad . Bad SoDoge!! tell hephaestus something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
-    if query == ">"
-      query = "\>"
-    end
-    `tmux send-keys -t game:0 #{query}`
+    `tmux send-keys -t game:0 '#{query}'`
     return ""
   end
 
