@@ -21,15 +21,6 @@ class OverrustleFetcher
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
   end
-  def ready
-    last_time = @last_time || 0
-    now = Time.now.to_i
-    if now - last_time > RATE_LIMIT
-      @last_time = now
-      return true
-    end
-    return false
-  end
   def check(query)
     m = trycheck(query)
     if @last_message.similar(m) >= 97

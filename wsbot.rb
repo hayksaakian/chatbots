@@ -23,12 +23,12 @@ WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 
-RATE_LIMIT = 32 # seconds
-ENV['last_time'] = 0
+RATE_LIMIT = 22 # seconds
+ENV['last_time'] = '0'
 def ready
   now = Time.now.to_i
   if now - ENV['last_time'].to_i > RATE_LIMIT
-    ENV['last_time'] = now
+    ENV['last_time'] = now.to_s
     return true
   end
   return false
@@ -79,7 +79,6 @@ EM.run {
         chatter_name = parsed_message["nick"]
       end
       if !baderror and !p_message.nil? and p_message.is_a?(String)
-        return unless ready
         chatbots.each do |chatbot|
           if p_message.match(chatbot.regex)
             if chatbot.respond_to?(:set_chatter) 
@@ -87,7 +86,7 @@ EM.run {
               puts "set chatter name to #{chatter_name}"
             end
             result = chatbot.check(p_message)
-            if !result.nil? and result.length > 0
+            if !result.nil? and result.length > 0 and ready
               result << suffix
               jsn = {data: result}
               ws.send("MSG "+jsn.to_json)
