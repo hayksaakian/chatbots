@@ -11,10 +11,13 @@ Dotenv.load
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
+require_relative 'jester'
 require_relative 'overrustle_fetcher'
-chatbot = OverrustleFetcher.new
 
-CMD_REGEX = chatbot.regex
+chatbots = [
+  OverrustleFetcher.new,
+  Jester.new
+]
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
@@ -27,7 +30,6 @@ OPTIONS = {headers:{
   }}
 
 reconnects = 0
-# puts chatbot.trycheck("")
 
 EM.run {
   ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
@@ -64,17 +66,26 @@ EM.run {
         proper_message = proper_message.join(" ")
         parsed_message = JSON.parse(proper_message)
         p_message = parsed_message["data"]
+        chatter_name = parsed_message["nick"]
       end
-      if !baderror and !p_message.nil? and p_message.is_a?(String) and p_message.match(CMD_REGEX)
-        if chatbot.ready
-          result = chatbot.check(p_message)
-          if !result.nil? and result.length > 0
-            result << suffix
-            jsn = {data: result}
-            ws.send("MSG "+jsn.to_json)
-            p "!!! SENDING DATA !!! #{result}"
-          else
-            # p "nothing to send for #{p_message}"
+      if !baderror and !p_message.nil? and p_message.is_a?(String)
+        chatbots.each do |chatbot|
+          if p_message.match(chatbot.regex) and chatbot.ready
+            if chatbot.respond_to?(:set_chatter) 
+              chatbot.set_chatter(chatter_name)
+              puts "set chatter name to #{chatter_name}"
+            end
+            result = chatbot.check(p_message)
+            if !result.nil? and result.length > 0
+              result << suffix
+              jsn = {data: result}
+              ws.send("MSG "+jsn.to_json)
+              p "!!! SENDING DATA !!! #{result}"
+            else
+              # p "nothing to send for #{p_message}"
+            end
+            # if we found a matching bot, stop the loop
+            break 
           end
         end
       end

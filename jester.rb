@@ -8,9 +8,9 @@ require 'action_view'
 require 'similar_text'
 include ActionView::Helpers::DateHelper
 
-class OverrustleFetcher
-  ENDPOINT = "http://overrustle.com:9998/api"
-  VALID_WORDS = %w{strim strims overrustle OverRustle}
+class Jester
+  ENDPOINT = "jester"
+  VALID_WORDS = %w{jester}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -30,6 +30,9 @@ class OverrustleFetcher
     end
     return false
   end
+  def set_chatter(name)
+    @chatter_name = name
+  end
   def check(query)
     m = trycheck(query)
     if @last_message.similar(m) >= 97
@@ -46,32 +49,32 @@ class OverrustleFetcher
     " OverRustle Tell hephaestus something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
-    # TODO: don't return anything if destiny is live
-    output = "Top 3 OverRustle.com strims: "
-    # cached = getcached(ENDPOINT)
-    # expire cache if...
-    jsn = getjson(ENDPOINT)
-    # if cached.nil? or cached["date"] < Time.now.to_i - CACHE_DURATION
-    #   jsn = getjson(ENDPOINT)
-    #   if jsn.nil?
-    #     raise "Bad JSON from API"
-    #   else
-    #     setcached(ENDPOINT, jsn)
-    #   end
-    # else
-    #   jsn = cached
-    # end
-    strims = jsn["streams"]
-    list_of_lists = strims.sort_by{|k,v| -v}.take(3)
-    list_of_lists.each do |sl|
-      output << "#{sl[1]} - overrustle.com#{sl[0]}   "
+    output = "jester? he\'s a pretty cool guy. "
+    cached = getcached(ENDPOINT)
+    if cached.nil? or cached.has_key?("lives") == false
+      cached = {}
+      cached["lives"] = 0
+      setcached(ENDPOINT, cached)
     end
+    # if jester is setting the number
+    parts = query.split(' ')
+    if @chatter_name == ENDPOINT and parts.length > 1
+      m_num = parts[1]
+      puts "jester is changing the count to: #{m_num}"
+      unless m_num.nil? or m_num.length == 0
+        # check if it's a number
+        if m_num =~ /\A\d+\z/
+          # set the new value
+          cached["lives"] = m_num.to_i
+          setcached(ENDPOINT, cached)
+        end
+      end
+    else
+      puts "someone else is calling this: #{@chatter_name}"
+    end
+    lives = cached["lives"]
+    output << "jester saved #{lives} lives. Klappa"
     return output
-  end
-
-  def getjson(url)
-    content = open(url).read
-    return JSON.parse(content)
   end
 
   # safe cache! won't die if the bot dies
