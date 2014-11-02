@@ -24,11 +24,11 @@ PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 
 RATE_LIMIT = 32 # seconds
-last_time = 0
+ENV['last_time'] = 0
 def ready
   now = Time.now.to_i
-  if now - last_time > RATE_LIMIT
-    last_time = now
+  if now - ENV['last_time'].to_i > RATE_LIMIT
+    ENV['last_time'] = now
     return true
   end
   return false
