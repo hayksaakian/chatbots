@@ -1,20 +1,28 @@
+require 'rubygems'
 require 'faye/websocket'
 require 'json'
 require 'eventmachine'
+require 'dotenv'
+Dotenv.load
 
 # require_relative 'roulette'
 # chatbot = Roulette.new
 
-require_relative 'dcss_player'
-chatbot = DcssPlayer.new
+# require_relative 'dcss_player'
+# chatbot = DcssPlayer.new
+
+require_relative 'overrustle_fetcher'
+chatbot = OverrustleFetcher.new
 
 CMD_REGEX = chatbot.regex
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
+DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
+puts DESTINYGG_API_KEY
 # note cookie lasts 1 month, look into using API somehow
 OPTIONS = {headers:{
-  "Cookie" => "sid=72b67fdbf9cb1ce2ffb5d2e8fcfb7443; rememberme=%7B%22expire%22%3A1396165082%2C%22created%22%3A1393573082%2C%22token%22%3A%22869ce5675adb26f82fad8f11d5045e61%22%7D; __utma=101017095.1366955240.1393573035.1393573035.1393573035.1; __utmb=101017095.4.10.1393573035; __utmc=101017095; __utmz=101017095.1393573035.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none)",
+  "Cookie" => "authtoken=#{DESTINYGG_API_KEY};",
   "Origin" => "*"
   }}
 
@@ -47,6 +55,7 @@ EM.run {
         end
         if event.data.match /needlogin/
           baderror = true
+          puts "need login!"
         end
       else
         # removes their name from the message, i think?
