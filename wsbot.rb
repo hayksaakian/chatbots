@@ -95,7 +95,7 @@ EM.run {
   ws.on :close do |event|
     p [:close, event.code, event.reason]
     ws = nil
-    if event.code = 1006 and reconnects < 4
+    if event.code == 1006 and reconnects < 4
       sleep 1
       reconnects += 1
       ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
