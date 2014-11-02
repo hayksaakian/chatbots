@@ -34,8 +34,9 @@ class OverrustleFetcher
     m = trycheck(query)
     if @last_message.similar(m) >= 97
       # it's too similar. so it will get the bot banned
-      m = "Check the last message, not much has changed "
+      m = "Top 3 strims are the same as before, but view counts might have changed. "
       m << ["AYYYLMAO", "Hhhehhehe", "DuckerZ", "NoTears"].sample
+      m << " strim list found on overrustle.com/strims  RustleBot by hephaestus"
     end
     @last_message = m
     return m
@@ -64,7 +65,7 @@ class OverrustleFetcher
     strims = jsn["streams"]
     list_of_lists = strims.sort_by{|k,v| -v}.take(3)
     list_of_lists.each do |sl|
-      output << "#{sl[1]} - overrustle.com#{sl[0]}   "
+      output << "\n#{sl[1]} - overrustle.com#{sl[0]}"
     end
     return output
   end

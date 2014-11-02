@@ -22,8 +22,18 @@ chatbots = [
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
-puts DESTINYGG_API_KEY
-# note cookie lasts 1 month, look into using API somehow
+
+RATE_LIMIT = 32 # seconds
+last_time = 0
+def ready
+  now = Time.now.to_i
+  if now - last_time > RATE_LIMIT
+    last_time = now
+    return true
+  end
+  return false
+end
+
 OPTIONS = {headers:{
   "Cookie" => "authtoken=#{DESTINYGG_API_KEY};",
   "Origin" => "*"
@@ -69,8 +79,9 @@ EM.run {
         chatter_name = parsed_message["nick"]
       end
       if !baderror and !p_message.nil? and p_message.is_a?(String)
+        return unless ready
         chatbots.each do |chatbot|
-          if p_message.match(chatbot.regex) and chatbot.ready
+          if p_message.match(chatbot.regex)
             if chatbot.respond_to?(:set_chatter) 
               chatbot.set_chatter(chatter_name)
               puts "set chatter name to #{chatter_name}"

@@ -37,8 +37,8 @@ class Jester
     m = trycheck(query)
     if @last_message.similar(m) >= 97
       # it's too similar. so it will get the bot banned
-      m = "Check the last message, not much has changed "
-      m << ["AYYYLMAO", "Hhhehhehe", "DuckerZ", "NoTears"].sample
+      m = "Jester hasn\'t saved any more lives yet. "
+      m << ["SoDoge", "DaFeels", "NoTears", "SoSad"].sample
     end
     @last_message = m
     return m
