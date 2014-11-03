@@ -54,9 +54,13 @@ class OverrustleFetcher
     #   jsn = cached
     # end
     strims = jsn["streams"]
-    list_of_lists = strims.sort_by{|k,v| -v}.take(3)
-    list_of_lists.each do |sl|
+    list_of_lists = strims.sort_by{|k,v| -v}
+    list_of_lists.take(3).each do |sl|
       output << "\n#{sl[1]} - overrustle.com#{sl[0]}"
+    end
+    if list_of_lists.length > 3
+      wildcard = list_of_lists.drop(3).sample
+      output << "\n Wild Card - overrustle.com#{wildcard[0]}"
     end
     return output
   end
