@@ -39,14 +39,16 @@ OPTIONS = {headers:{
   "Origin" => "*"
   }}
 
-reconnects = 0
+GLOBALS = {
+  'reconnects' => 0,
+}
 
 EM.run {
   ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
 
   ws.on :open do |event|
     p [:open]
-    reconnects = 0
+    GLOBALS['reconnects'] = 0
     # ws.send('Hello, world!')
   end
 
@@ -105,9 +107,9 @@ EM.run {
   ws.on :close do |event|
     p [:close, event.code, event.reason]
     ws = nil
-    if event.code == 1006 and reconnects < 4
+    if event.code == 1006 and GLOBALS['reconnects'] < 4
       sleep 1
-      reconnects += 1
+      GLOBALS['reconnects'] += 1
       ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
     end
   end
