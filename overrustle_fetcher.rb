@@ -23,12 +23,6 @@ class OverrustleFetcher
   end
   def check(query)
     m = trycheck(query)
-    if @last_message.similar(m) >= 97
-      # it's too similar. so it will get the bot banned
-      m = "Top 3 strims are the same as before, but view counts might have changed. "
-      m << ["AYYYLMAO", "Hhhehhehe", "DuckerZ", "NoTears"].sample
-      m << " strim list found on overrustle.com/strims  RustleBot by hephaestus"
-    end
     @last_message = m
     return m
   rescue Exception => e
@@ -61,6 +55,19 @@ class OverrustleFetcher
     if list_of_lists.length > 3
       wildcard = list_of_lists.drop(3).sample
       output << "\n Wild Card - overrustle.com#{wildcard[0]}"
+    end
+
+    # it's too similar. so it will get the bot banned
+    # get the next 3
+    if @last_message.similar(output) >= 90
+      output = "#4 to #6 OverRustle.com strims :"
+      list_of_lists.drop(3).take(3).each do |sl|
+        output << "\n#{sl[1]} - overrustle.com#{sl[0]}"
+      end
+      if list_of_lists.length > 6
+        wildcard = list_of_lists.drop(6).sample
+        output << "\n Wild Card - overrustle.com#{wildcard[0]}"
+      end
     end
     return output
   end
