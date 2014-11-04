@@ -14,7 +14,7 @@ Dotenv.load
 require_relative 'jester'
 require_relative 'overrustle_fetcher'
 
-chatbots = [
+CHATBOTS = [
   OverrustleFetcher.new,
   Jester.new
 ]
@@ -83,7 +83,7 @@ EM.run {
           chatter_name = parsed_message["nick"]
         end
         if !baderror and !p_message.nil? and p_message.is_a?(String)
-          chatbots.each do |chatbot|
+          CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
               if chatbot.respond_to?(:set_chatter) 
                 chatbot.set_chatter(chatter_name)
