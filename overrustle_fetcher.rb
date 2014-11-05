@@ -62,7 +62,7 @@ class OverrustleFetcher
     if @last_message.similar(output) >= 90
       output = "#4 to #6 OverRustle.com strims :"
       list_of_lists.drop(3).take(3).each do |sl|
-        output << "\n#{sl[1]} - overrustle.com#{sl[0]}"
+        output << "\noverrustle.com#{sl[0]} has #{sl[1]} | "
       end
       if list_of_lists.length > 6
         wildcard = list_of_lists.drop(6).sample
