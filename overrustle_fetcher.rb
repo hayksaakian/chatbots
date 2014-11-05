@@ -50,7 +50,7 @@ class OverrustleFetcher
     strims = jsn["streams"]
     list_of_lists = strims.sort_by{|k,v| -v}
     list_of_lists.take(3).each do |sl|
-      output << "\n#{sl[1]} - overrustle.com#{sl[0]}"
+      output << "\noverrustle.com#{sl[0]} has #{sl[1]} | "
     end
     if list_of_lists.length > 3
       wildcard = list_of_lists.drop(3).sample
