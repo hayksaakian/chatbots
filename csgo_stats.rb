@@ -11,7 +11,7 @@ include ActionView::Helpers::DateHelper
 class CsgoStats
   ENDPOINT = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/?ajax&uptodate"
   HUMAN_LINK = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/"
-  VALID_WORDS = %w{cs counterstrike ayyylmao}
+  VALID_WORDS = %w{cs csgo counterstrike ayyylmao}
   RATE_LIMIT = 16 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -41,19 +41,21 @@ class CsgoStats
   end
   def trycheck(query)
     cached = getcached(ENDPOINT)
+    cached["date"] ||= Time.now.to_i
     # expire cache if...
-    if cached.nil? or cached["date"] < Time.now.to_i - CACHE_DURATION
+    if cached.nil? or cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
       jsn = getjson(ENDPOINT)
       if jsn.nil?
         raise "Failed to GET CSGO data from csgo-stats.com"
       else
+        jsn["date"] ||= Time.now.to_i
         setcached(ENDPOINT, jsn)
       end
     else
       jsn = cached
     end
 
-    parsed_html = Nokogiri.html(jsn["content"])
+    parsed_html = Nokogiri.parse(jsn["content"])
     lastmatch = parsed_html.css("#lastmatch")
     lmtxt = lastmatch.children[3].text()
     result = lmtxt.include?('Win') ? 'won' : 'lost'
@@ -63,8 +65,8 @@ class CsgoStats
     # contains lifetime stats
     misc_data = parsed_html.css('#misc').children[3].children[3]
     # matches won / played
-    overall = "#{misc_data.children[15]} / #{misc_data.children[11]}"
-    return "Destiny #{result} a game with #{lmtxt} (#{overall} wins overall) #{HUMAN_LINK}"
+    overall = "#{misc_data.children[15].text.chomp} / #{misc_data.children[11].text.chomp}"
+    return "Destiny #{result} a game with #{lmtxt} (#{overall} games won overall) #{HUMAN_LINK}"
     # output << " as of "
     # output << time_ago_in_words(Time.at(jsn["date"]))
     # output << " ago"
