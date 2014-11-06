@@ -44,6 +44,7 @@ OPTIONS = {headers:{
 
 GLOBALS = {
   'reconnects' => 0,
+  'baddies' => []
 }
 
 EM.run {
@@ -68,12 +69,17 @@ EM.run {
         p_message = ""
         baderror = false
         if event.data.match /^ERR/
-          if event.data.match /duplicate/
+          if event.data.match /duplicate/i
             # suffix = " OverRustle x #{(Random.rand*100000).to_s}"
-          end
-          if event.data.match /needlogin/
+          elsif event.data.match /needlogin/i
             baderror = true
-            puts "need login!"
+            puts "---> need login!"
+          elsif event.data.match /muted/i
+            baderror = true
+            puts '---> Muted'
+            if GLOBALS.has_key?('last_caller')
+              GLOBALS['baddies'] << GLOBALS['last_caller']
+            end
           end
         else
           # removes their name from the message, i think?
@@ -84,7 +90,7 @@ EM.run {
           p_message = parsed_message["data"]
           chatter_name = parsed_message["nick"]
         end
-        if !baderror and !p_message.nil? and p_message.is_a?(String)
+        if !baderror and !GLOBALS['baddies'].include?('chatter_name') and !p_message.nil? and p_message.is_a?(String)
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
               if chatbot.respond_to?(:set_chatter) 
@@ -96,7 +102,8 @@ EM.run {
                 result << suffix
                 jsn = {data: result}
                 ws.send("MSG "+jsn.to_json)
-                p "!!! SENDING DATA !!! #{result}"
+                p "<--- SENDING DATA !!! #{result}"
+                GLOBALS['last_caller'] = chatter_name
               else
                 # p "nothing to send for #{p_message}"
               end
