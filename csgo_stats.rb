@@ -8,15 +8,15 @@ require 'digest'
 require 'action_view'
 include ActionView::Helpers::DateHelper
 
-ENDPOINT = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/?ajax&uptodate"
-HUMAN_LINK = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/"
-VALID_WORDS = %w{cs counterstrike ayyylmao}
-RATE_LIMIT = 16 # seconds
-CACHE_DURATION = 60 #seconds
-APP_ROOT = File.expand_path(File.dirname(__FILE__))
-CACHE_FILE = APP_ROOT+"/cache/"
-
 class CsgoStats
+  ENDPOINT = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/?ajax&uptodate"
+  HUMAN_LINK = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/"
+  VALID_WORDS = %w{cs counterstrike ayyylmao}
+  RATE_LIMIT = 16 # seconds
+  CACHE_DURATION = 60 #seconds
+  APP_ROOT = File.expand_path(File.dirname(__FILE__))
+  CACHE_FILE = APP_ROOT+"/cache/"
+
   attr_accessor :regex
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
