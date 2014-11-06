@@ -40,10 +40,10 @@ class CsgoStats
     " AYYYLMAO tell hephaestus something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
-    cached = getcached(ENDPOINT)
-    cached["date"] ||= Time.now.to_i
+    cached = getcached(ENDPOINT) || {}
+    cached["date"] ||= 0
     # expire cache if...
-    if cached.nil? or cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
+    if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
       jsn = getjson(ENDPOINT)
       if jsn.nil?
         raise "Failed to GET CSGO data from csgo-stats.com"
