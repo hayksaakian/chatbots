@@ -11,12 +11,14 @@ Dotenv.load
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
-require_relative 'jester'
 require_relative 'overrustle_fetcher'
+require_relative 'jester'
+require_relative 'csgo_stats'
 
 CHATBOTS = [
   OverrustleFetcher.new,
-  Jester.new
+  Jester.new,
+  CsgoStats.new
 ]
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
