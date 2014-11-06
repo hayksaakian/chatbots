@@ -11,6 +11,7 @@ include ActionView::Helpers::DateHelper
 class OverrustleFetcher
   ENDPOINT = "http://overrustle.com:9998/api"
   VALID_WORDS = %w{strim strims overrustle OverRustle}
+  FILTERED_STRIMS = %w{clickerheroes}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -49,6 +50,16 @@ class OverrustleFetcher
     # end
     strims = jsn["streams"]
     list_of_lists = strims.sort_by{|k,v| -v}
+    # filter:
+    to_remove = []
+    list_of_lists.each_with_index do |sl, i|
+      if sl[0] =~ /(#{FILTERED_STRIMS.join('|')})/i
+        to_remove << i
+      end
+    end
+    # go from back to front so the index doesn't mess up
+    to_remove.reverse.each{|tr| list_of_lists.delete_at(tr)}
+
     list_of_lists.take(3).each do |sl|
       output << "\noverrustle.com#{sl[0]} has #{sl[1]} | "
     end
@@ -69,6 +80,11 @@ class OverrustleFetcher
         output << "\n Wild Card - overrustle.com#{wildcard[0]}"
       end
     end
+
+    if @last_message.similar(output) >= 90
+      output = "Check out Overrustle.com/strims for more strims. RustleBot by hephaestus."
+    end
+
     return output
   end
 
