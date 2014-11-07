@@ -9,7 +9,7 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class RandomAslan
-  VALID_WORDS = %w{randomaslan}
+  VALID_WORDS = %w{randomaslan aslan}
   RATE_LIMIT = 22 # seconds
   PICTURES = [
 "i.imgur.com/7CKen57.png",
