@@ -71,17 +71,14 @@ class OverrustleFetcher
     # it's too similar. so it will get the bot banned
     # get the next 3
     if @last_message.similar(output) >= 90
-      output = "#4 to #6 OverRustle.com strims :"
+      output = "Full Strim List - overrustle.com/strims"
+      output << "\n #4 to #6  :"
       list_of_lists.drop(3).take(3).each do |sl|
         output << "\noverrustle.com#{sl[0]} has #{sl[1]} | "
       end
-      if list_of_lists.length > 6
-        wildcard = list_of_lists.drop(6).sample
-        output << "\n Wild Card - overrustle.com#{wildcard[0]}"
-      end
     end
 
-    if @last_message.similar(output) >= 90
+    if @last_message.similar(output) >= 80
       output = "Check out Overrustle.com/strims for more strims. RustleBot by hephaestus."
     end
 

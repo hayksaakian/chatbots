@@ -44,7 +44,7 @@ OPTIONS = {headers:{
 
 GLOBALS = {
   'reconnects' => 0,
-  'baddies' => []
+  'baddies' => [] # todo: persist this
 }
 
 EM.run {
