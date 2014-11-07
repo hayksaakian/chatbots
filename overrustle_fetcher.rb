@@ -11,7 +11,7 @@ include ActionView::Helpers::DateHelper
 class OverrustleFetcher
   ENDPOINT = "http://overrustle.com:9998/api"
   VALID_WORDS = %w{strim strims overrustle OverRustle}
-  FILTERED_STRIMS = %w{clickerheroes s=advanced}
+  FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
