@@ -38,7 +38,7 @@ class OverrustleFetcher
   end
   def trycheck(query)
     saved_filter = getcached("chat_filter") || []
-    if MODS.include?(@chatter.downcase)
+    if query =~ /^(!blacklist_nospace)/i and MODS.include?(@chatter.downcase)
       parts = query.split(' ')
       if parts.length < 3
         return "#{@chatter} didn\'t format the blacklist command correctly"
