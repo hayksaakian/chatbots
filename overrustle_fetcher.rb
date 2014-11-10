@@ -30,7 +30,7 @@ class OverrustleFetcher
     puts e.message
     puts e.backtrace.join("\n")
     m = e.message
-    " OverRustle Tell hephaestus something broke. Exception: #{m.to_s}"
+    " OverRustle Tell hephaestus or iliedaboutcake something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
     # TODO: don't return anything if destiny is live
