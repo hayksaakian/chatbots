@@ -10,7 +10,8 @@ include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
   ENDPOINT = "http://overrustle.com:9998/api"
-  VALID_WORDS = %w{strim strims overrustle OverRustle}
+  VALID_WORDS = %w{strim strims overrustle OverRustle blacklist_nospace}
+  MODS = %w{iliedaboutcake hephaestus 13hephaestus}.map{|m| m.downcase}
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
@@ -21,6 +22,9 @@ class OverrustleFetcher
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
+  end
+  def set_chatter(name)
+    @chatter = name
   end
   def check(query)
     m = trycheck(query)
@@ -33,6 +37,17 @@ class OverrustleFetcher
     " OverRustle Tell hephaestus or iliedaboutcake something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
+    saved_filter = getcached("chat_filter") || []
+    if MODS.include?(@chatter.downcase)
+      parts = query.split(' ')
+      if parts.length < 3
+        return "#{@chatter} didn\'t format the blacklist command correctly"
+      end
+      thing_to_blacklist = parts[1] + parts[2]
+      saved_filter.push(thing_to_blacklist)
+      setcached("chat_filter", saved_filter)
+      return "#{parts[1]} #{parts[2]} (no space) added to blacklist by #{@chatter}"
+    end
     # TODO: don't return anything if destiny is live
     output = "Top 3 OverRustle.com strims: "
     # cached = getcached(ENDPOINT)
@@ -48,12 +63,13 @@ class OverrustleFetcher
     # else
     #   jsn = cached
     # end
+    filtered_strims = FILTERED_STRIMS + saved_filter
     strims = jsn["streams"]
     list_of_lists = strims.sort_by{|k,v| -(v).to_i}
     # filter:
     to_remove = []
     list_of_lists.each_with_index do |sl, i|
-      if sl[0] =~ /(#{FILTERED_STRIMS.join('|')})/i
+      if sl[0] =~ /(#{filtered_strims.join('|')})/i
         to_remove << i
       end
     end
@@ -93,7 +109,7 @@ class OverrustleFetcher
   # safe cache! won't die if the bot dies
   def getcached(url)
     return @cached_json if !@cached_json.nil?
-    path = CACHE_FILE + hashed(url) + ".json"
+    path = CACHE_FILE + url + ".json"
     if File.exists?(path)
       f = File.open(path)
       return JSON.parse(f.read)
@@ -102,7 +118,7 @@ class OverrustleFetcher
   end
   def setcached(url, jsn)
     @cached_json = jsn
-    path = CACHE_FILE + hashed(url) + ".json"
+    path = CACHE_FILE + url + ".json"
     File.open(path, 'w') do |f2|
       f2.puts JSON.unparse(jsn)
     end
