@@ -49,7 +49,7 @@ class OverrustleFetcher
     #   jsn = cached
     # end
     strims = jsn["streams"]
-    list_of_lists = strims.sort_by{|k,v| -v}
+    list_of_lists = strims.sort_by{|k,v| -(v).to_i}
     # filter:
     to_remove = []
     list_of_lists.each_with_index do |sl, i|
