@@ -121,9 +121,9 @@ EM.run {
       p [:close, event.code, event.reason]
       ws = nil
       puts 'Disconnected!'
-      if event.code == 1006 and GLOBALS['reconnects'] < 4
+      if (event.code == 1006 or event.code == 1000) and GLOBALS['reconnects'] < 4
         puts 'due to network connection to chat server'
-        sleep 1
+        sleep 2
         GLOBALS['reconnects'] += 1
         make_ws
       end
