@@ -102,7 +102,11 @@ class Notes
         all_commands << note
         setcached('commands', all_commands)
 
-        return "Now, !#{keyword} says what #{@chatter_name} just said"
+        if command == 'transfer'
+          return "#{@chatter_name} transfered !#{keyword} to #{note['owner']}"
+        else
+          return "Now, !#{keyword} says what #{@chatter_name} just said"
+        end
       else
         return "#{note['owner']} owns this command. gtfo #{@chatter_name}"
       end
