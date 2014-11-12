@@ -20,7 +20,7 @@ class Notes
   def regex
     words = getcached('commands')
     words ||= []
-    words = words.map{|wd| wd['message']}
+    words = words.map{|wd| wd['command']}
     re = /^!(#{(VALID_WORDS+words).join('|')})/i
     return re
   end
@@ -89,8 +89,11 @@ class Notes
           note['owner'] = @chatter_name
           note['message'] = message
         end
+        note['command'] ||= keyword
+
         setcached("commands_#{keyword}", note)
-        all_commands = getcached('commands') or []
+        all_commands = getcached('commands')
+        all_commands ||= []
         all_commands << note
         setcached('commands', all_commands)
         return "(owned by #{@chatter_name}) !#{keyword} will now make me say: #{message}"
