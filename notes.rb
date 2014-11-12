@@ -109,7 +109,6 @@ class Notes
 
   # safe cache! won't die if the bot dies
   def getcached(url)
-    return @cached_json if !@cached_json.nil?
     path = CACHE_FILE + hashed(url) + ".json"
     if File.exists?(path)
       f = File.open(path)
@@ -118,7 +117,6 @@ class Notes
     return nil
   end
   def setcached(url, jsn)
-    @cached_json = jsn
     path = CACHE_FILE + hashed(url) + ".json"
     File.open(path, 'w') do |f2|
       f2.puts JSON.unparse(jsn)
