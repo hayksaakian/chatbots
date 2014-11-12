@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class Notes
   VALID_WORDS = %w{help set release transfer}
-  WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza}
+  WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza mikecom32}
   RATE_LIMIT = 7 # seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/commands/"
@@ -46,7 +46,7 @@ class Notes
   def trycheck(query)
     # if jester is setting the number
     parts = query.split(' ')
-    command = parts[0] # eg the first part of their message is a user defined command
+    command = parts[0].downcase # eg the first part of their message is a user defined command
     command.slice!(0) # remove leading !
     if command == 'help'
       return "set a command: `!set COMMAND MESSAGE`. call a command: `!COMMAND`. release a command: `!release COMMAND`. transfer a command `!transfer COMMAND NEW_OWNER_NAME`"
@@ -56,7 +56,7 @@ class Notes
       if parts.length < 2
         return "#{@chatter_name}, you did it wrong. see !help"
       end
-      keyword = parts[1]
+      keyword = parts[1].downcase
       note = getcached("commands_#{keyword}")
 
       # release
@@ -101,6 +101,7 @@ class Notes
         all_commands ||= []
         all_commands << note
         setcached('commands', all_commands)
+
         return "Now, !#{keyword} says what #{@chatter_name} just said"
       else
         return "#{note['owner']} owns this command. gtfo #{@chatter_name}"
