@@ -96,7 +96,7 @@ class Notes
         all_commands ||= []
         all_commands << note
         setcached('commands', all_commands)
-        return "(owned by #{@chatter_name}) !#{keyword} will now make me say: #{message}"
+        return "From now on, !#{keyword} will now make me say the last thing #{@chatter_name} said"
       else
         return "#{note['owner']} owns this command. gtfo #{@chatter_name}"
       end
