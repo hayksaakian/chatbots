@@ -10,6 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class Notes
   VALID_WORDS = %w{help set release transfer}
+  WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza}
   RATE_LIMIT = 7 # seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/commands/"
@@ -75,16 +76,20 @@ class Notes
       if parts.length < 3
         return "#{@chatter_name}, you did it wrong. see !help"
       end
-      if note == nil or note['owner'] == @chatter_name
+      whitelisted = WHITELISTED_USERS.include?(@chatter_name.downcase)
+      if note == nil or note['owner'] == @chatter_name or whitelisted
         if note == nil
           is_new = true
           note = {}
+          unless whitelisted
+            return "You must be whitelisted to set new commands"
+          end
         end
         if command == 'transfer'
           new_owner = parts[2]
           note['owner'] = new_owner
           note['message'] ||= "#{@chatter_name} gave #{new_owner} this command without setting a message"
-        else
+        elsif command == 'set'
           message = query.partition(keyword).last.strip
           note['owner'] = @chatter_name
           note['message'] = message
