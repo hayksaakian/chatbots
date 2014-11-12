@@ -18,7 +18,7 @@ class Notes
     @last_message = ""
   end
   def regex
-    words = getcached('command_words') || []
+    words = getcached('commands') || []
     re = /^!(#{(VALID_WORDS+words).join('|')})/i
     return re
   end
@@ -90,7 +90,7 @@ class Notes
         setcached("commands_#{keyword}", note)
         all_commands = getcached('commands') || []
         all_commands << keyword
-        setcached("commands", all_commands)
+        setcached('commands', all_commands)
         return "!#{keyword} (owned by #{@chatter_name}) will now make me say: #{message}"
       else
         return "#{note['owner']} owns this command. gtfo #{@chatter_name}"
