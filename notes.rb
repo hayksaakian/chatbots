@@ -19,7 +19,7 @@ class Notes
   end
   def regex
     words = getcached('command_words') || []
-    re = /^!(#{(VALID_WORDS+command_words).join('|')})/i
+    re = /^!(#{(VALID_WORDS+words).join('|')})/i
     return re
   end
   def set_chatter(name)
