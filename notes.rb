@@ -44,6 +44,7 @@ class Notes
     # if jester is setting the number
     parts = query.split(' ')
     command = parts[0] # eg the first part of their message is a user defined command
+    command.slice!(0) # remove leading !
     if command == 'help'
       return "set a command: `!set COMMAND MESSAGE`. call a command: `!COMMAND`. release a command: `!release COMMAND`. transfer a command `!transfer NEW_OWNER_NAME`"
     elsif %w{set release transfer}.include?(command)
