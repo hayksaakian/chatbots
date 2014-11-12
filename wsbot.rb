@@ -1,3 +1,4 @@
+Encoding.default_external = "utf-8"
 require 'rubygems'
 require 'faye/websocket'
 require 'json'
@@ -29,7 +30,7 @@ WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 
-RATE_LIMIT = 22 # seconds
+RATE_LIMIT = 12 # seconds
 ENV['last_time'] = '0'
 def ready
   now = Time.now.to_i
