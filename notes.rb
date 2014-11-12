@@ -18,7 +18,8 @@ class Notes
     @last_message = ""
   end
   def regex
-    words = getcached('commands') || []
+    words = getcached('commands')
+    words ||= []
     re = /^!(#{(VALID_WORDS+words).join('|')})/i
     return re
   end
@@ -73,7 +74,7 @@ class Notes
       if parts.length < 3
         return "#{@chatter_name}, you did it wrong. see !help"
       end
-      if note == nil || note['owner'] == @chatter_name
+      if note == nil or note['owner'] == @chatter_name
         if note == nil
           is_new = true
           note = {}
@@ -88,7 +89,7 @@ class Notes
           note['message'] = message
         end
         setcached("commands_#{keyword}", note)
-        all_commands = getcached('commands') || []
+        all_commands = getcached('commands') or []
         all_commands << keyword
         setcached('commands', all_commands)
         return "!#{keyword} (owned by #{@chatter_name}) will now make me say: #{message}"
