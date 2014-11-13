@@ -90,7 +90,7 @@ class Notes
           note['owner'] = new_owner
           note['message'] ||= "#{@chatter_name} gave #{new_owner} this command without setting a message"
         elsif command == 'set'
-          message = query.partition(keyword).last.strip
+          message = query.partition(/(#{keyword})/i).last.strip
           note['owner'] = @chatter_name
           note['message'] = message
         end
