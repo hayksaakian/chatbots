@@ -9,7 +9,7 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class Notes
-  VALID_WORDS = %w{help set release transfer}
+  VALID_WORDS = %w{help set release transfer commands mycommands}
   WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza mikecom32}
   RATE_LIMIT = 7 # seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -99,6 +99,7 @@ class Notes
         setcached("commands_#{keyword}", note)
         all_commands = getcached('commands')
         all_commands ||= []
+        # TODO: don't insert the same command twice
         all_commands << note
         setcached('commands', all_commands)
 
@@ -109,6 +110,16 @@ class Notes
         end
       else
         return "#{note['owner']} owns this command. gtfo #{@chatter_name}"
+      end
+    elsif %w{mycommands commands}.include?(command)
+      all_commands = getcached('commands')
+      all_commands ||= []
+      if command == "mycommands"
+        all_commands.select!{|c| c['owner']==@chatter_name}
+        all_commands.map!{|c| c['command']}
+        return "#{chatter_name}\'s commands (prefix with !): #{all_commands.join(', ')}"
+      else
+        return "All Commands (prefix with !): #{all_commands.map{|c| c['command']}.join(', ')}"
       end
     else
       note = getcached("commands_#{command}")
