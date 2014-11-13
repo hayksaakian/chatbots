@@ -114,13 +114,17 @@ class Notes
     elsif %w{mycommands commands}.include?(command)
       all_commands = getcached('commands')
       all_commands ||= []
+      preput = ""
       if command == "mycommands"
         all_commands.select!{|c| c['owner']==@chatter_name}
-        all_commands.map!{|c| c['command']}
-        return "#{chatter_name}\'s commands (prefix with !): #{all_commands.join(', ')}"
+        preput = "#{chatter_name}\'s commands (prefix with !):"
       else
-        return "All Commands (prefix with !): #{all_commands.map{|c| c['command']}.join(', ')}"
+        preput = "All Commands (prefix with !):"
       end
+      all_commands.map!{|c| c['command']}
+      # TODO: this is a bug, we should be deduping commands
+      all_commands.uniq!
+      return "#{preput} #{all_commands.map{|c| c['command']}.join(', ')}"
     else
       note = getcached("commands_#{command}")
       if note == nil
