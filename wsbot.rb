@@ -30,12 +30,14 @@ WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 
-RATE_LIMIT = 12 # seconds
+RATE_LIMIT = 9 # seconds
 ENV['last_time'] = '0'
-def ready
+
+def ready(command)
   now = Time.now.to_i
-  if now - ENV['last_time'].to_i > RATE_LIMIT
+  if (command != GLOBALS['last_command']) or (now - ENV['last_time'].to_i > RATE_LIMIT)
     ENV['last_time'] = now.to_s
+    GLOBALS['last_command'] = command
     return true
   end
   return false
@@ -49,7 +51,8 @@ OPTIONS = {headers:{
 
 GLOBALS = {
   'reconnects' => 0,
-  'baddies' => [] # todo: persist this
+  'baddies' => [], # todo: persist this
+  'last_command' => ''
 }
 
 EM.run {
@@ -95,14 +98,17 @@ EM.run {
           p_message = parsed_message["data"]
           chatter_name = parsed_message["nick"]
         end
-        if !baderror and !GLOBALS['baddies'].include?('chatter_name') and !p_message.nil? and p_message.is_a?(String)
+        if !baderror and !GLOBALS['baddies'].include?(chatter_name) and !p_message.nil? and p_message.is_a?(String)
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
               if chatbot.respond_to?(:set_chatter) 
                 chatbot.set_chatter(chatter_name)
                 puts "set chatter name to #{chatter_name}"
               end
-              result = chatbot.check(p_message)
+              cmd = p_message.split(' ').first
+
+              result = ready(cmd) ? chatbot.check(p_message) : nil
+
               if !result.nil? and result.length > 0 and ready
                 result << suffix
                 jsn = {data: result}
