@@ -124,7 +124,7 @@ class Notes
       all_commands.map!{|c| c['command']}
       # TODO: this is a bug, we should be deduping commands
       all_commands.uniq!
-      return "#{preput} #{all_commands.map{|c| c['command']}.join(', ')}"
+      return "#{preput} #{all_commands.join(', ')}"
     else
       note = getcached("commands_#{command}")
       if note == nil
