@@ -117,7 +117,7 @@ class Notes
       preput = ""
       if command == "mycommands"
         all_commands.select!{|c| c['owner']==@chatter_name}
-        preput = "#{chatter_name}\'s commands (prefix with !):"
+        preput = "#{@chatter_name}\'s commands (prefix with !):"
       else
         preput = "All Commands (prefix with !):"
       end
