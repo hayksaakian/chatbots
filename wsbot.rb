@@ -109,7 +109,7 @@ EM.run {
 
               result = ready(cmd) ? chatbot.check(p_message) : nil
 
-              if !result.nil? and result.length > 0 and ready
+              if !result.nil? and result.length > 0
                 result << suffix
                 jsn = {data: result}
                 ws.send("MSG "+jsn.to_json)
