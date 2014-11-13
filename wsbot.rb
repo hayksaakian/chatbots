@@ -30,7 +30,7 @@ WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 
-RATE_LIMIT = 9 # seconds
+RATE_LIMIT = 10 # seconds
 ENV['last_time'] = '0'
 
 def ready(command)
