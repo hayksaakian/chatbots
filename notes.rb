@@ -32,7 +32,7 @@ class Notes
     m = trycheck(query)
     if @last_message.similar(m) >= 97
       # it's too similar. so it will get the bot banned
-      m = "I already just said that, #{@chatter_name}. "
+      m = "I literally just said that, #{@chatter_name}. "
       m << %w{MotherFuckinGame UWOTM8 NoTears CallCatz}.sample
     end
     @last_message = m
