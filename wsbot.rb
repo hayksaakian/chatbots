@@ -22,8 +22,8 @@ CHATBOTS = [
   OverrustleFetcher.new,
   Jester.new,
   CsgoStats.new,
-  RandomAslan.new,
-  Notes.new
+  RandomAslan.new#,
+  #Notes.new
 ]
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
