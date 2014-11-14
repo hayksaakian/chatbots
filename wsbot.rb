@@ -21,8 +21,8 @@ require_relative 'notes'
 CHATBOTS = [
   OverrustleFetcher.new,
   Jester.new,
-  CsgoStats.new,
-  RandomAslan.new#,
+  CsgoStats.new#,
+  #RandomAslan.new,
   #Notes.new
 ]
 
