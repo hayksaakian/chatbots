@@ -52,6 +52,9 @@ class Moobie
     # sort by similarity to query, because rotten tomates doesn't sort
     if @cache[query].nil?
       @cache[query] = RottenMovie.find(:title => query)
+      # the API can return nil, a single moobie, or an array
+      # so let's coerce to an array
+      @cache[query] = [@cache[query]] unless @cache[query].is_a? Array
       if @cache[query].count > 0
         @cache[query].sort_by!{|m| m.title.similar(query)}
         @cache[query].reverse! unless @cache[query].nil?
@@ -78,9 +81,10 @@ class Moobie
         end
       end
     end
-    output = "#{movie.title} "
+    output = ""
     output << "#{index+1}) " unless index == 0
-    output << "#{movie.year} - " unless movie.year.nil?
+    output << "#{movie.title} "
+    output << "(#{movie.year}) - " unless movie.year.nil?
     output << "critics rated: #{movie.ratings.critics_score}/100 " unless movie.ratings.critics_score <= 0
     output << "audience rated: #{movie.ratings.audience_score}/100 " unless movie.ratings.audience_score <= 0
     output << "- via #{movie.links.alternate}"
