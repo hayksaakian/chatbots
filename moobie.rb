@@ -29,7 +29,11 @@ class Moobie
     msg = trycheck(query, index)
     if @last_message.similar(msg) >= 90
       # it's too similar. so it will get the bot banned
-      msg = check(query, index+1)
+      if index > 29
+        msg = "Out of moobies"
+      else
+        msg = check(query, index+1)
+      end
     end
     @last_message = msg
     return msg
@@ -46,12 +50,21 @@ class Moobie
     parts.delete_at(0)
     query = parts.join(' ')
     # sort by similarity to query, because rotten tomates doesn't sort
-    @cache[query] ||= RottenMovie.find(:title => query).sort_by{|m| m.title.similar(query)}.reverse
+    if @cache[query].nil?
+      @cache[query] = RottenMovie.find(:title => query)
+      if @cache[query].count > 0
+        @cache[query].sort_by!{|m| m.title.similar(query)}
+        @cache[query].reverse! unless @cache[query].nil?
+      end
+    end
+    if @cache[query].nil?
+      return "ERR: No results for #{query}"
+    end
     movies = @cache[query]
     index = 0 if index.nil?
     if index >= movies.count
       puts @cache[query]
-      return "No more moobies found :("
+      return "ERR: No more moobies found :("
     end
     movie = movies[index]
     # because their search is bad, we'll try
