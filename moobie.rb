@@ -27,8 +27,9 @@ class Moobie
   def check(query, index=0)
     index = 0 if index.nil?
     msg = trycheck(query, index)
-    if @last_message.similar(msg) >= 90
+    if @last_message.similar(msg) == 100
       # it's too similar. so it will get the bot banned
+      puts "Getting next Moobie"
       if index > 29
         msg = "Out of moobies. too much recursion"
       else
@@ -68,7 +69,7 @@ class Moobie
     movies = @cache[query]
     index = 0 if index.nil?
     if index >= movies.count
-      puts @cache[query]
+      puts movies
       return "ERR: No more moobies found :("
     end
     movie = movies[index]
@@ -86,9 +87,9 @@ class Moobie
     output = ""
     output << "#{index+1}) " unless index == 0
     output << "#{movie.title} "
-    output << "(#{movie.year}) - " unless movie.year.nil?
-    output << "critics rated: #{movie.ratings.critics_score}/100 " unless movie.ratings.critics_score <= 0
-    output << "audience rated: #{movie.ratings.audience_score}/100 " unless movie.ratings.audience_score <= 0
+    output << "(#{movie.year}) " unless movie.year.nil?
+    output << " - critics rated: #{movie.ratings.critics_score}/100 " unless movie.ratings.critics_score <= 0
+    output << " - audience rated: #{movie.ratings.audience_score}/100 " unless movie.ratings.audience_score <= 0
     output << "- via #{movie.links.alternate}"
     puts output
     # expire cache if...
