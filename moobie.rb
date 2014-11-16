@@ -25,6 +25,7 @@ class Moobie
     @last_message = ""
   end
   def check(query, index=0)
+    index = 0 if index.nil?
     msg = trycheck(query, index)
     if @last_message.similar(msg) >= 90
       # it's too similar. so it will get the bot banned
@@ -46,6 +47,7 @@ class Moobie
     query = parts.join(' ')
     @cache[query] ||= RottenMovie.find(:title => query)
     movies = @cache[query]
+    index = 0 if index.nil?
     if index >= movies.count
       puts @cache[query]
       return "No more moobies found :("
