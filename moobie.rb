@@ -90,7 +90,7 @@ class Moobie
     output = ""
     output << "#{index+1}) " unless index == 0
     output << "#{movie.title} "
-    output << "(#{movie.year}) " unless movie.year.nil?
+    output << "(#{movie.year}) " if (!movie.year.nil? and (movie.year.to_s.length > 0))
     output << " - critics rated: #{movie.ratings.critics_score}/100 " unless movie.ratings.critics_score <= 0
     output << " - audience rated: #{movie.ratings.audience_score}/100 " unless movie.ratings.audience_score <= 0
     output << "- via #{movie.links.alternate}"
