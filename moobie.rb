@@ -24,6 +24,9 @@ class Moobie
     @cache = {}
     @last_message = ""
   end
+  def set_chatter(name)
+    @chatter = name
+  end
   def check(query, index=0)
     index = 0 if index.nil?
     msg = trycheck(query, index)
@@ -64,7 +67,7 @@ class Moobie
       end
     end
     if @cache[query].nil? or @cache[query].count == 0
-      return "ERR: No results for #{query}"
+      return "ERR: No results for your title #{@chatter}"
     end
     movies = @cache[query]
     index = 0 if index.nil?
