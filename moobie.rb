@@ -54,8 +54,10 @@ class Moobie
       @cache[query] = RottenMovie.find(:title => query)
       # the API can return nil, a single moobie, or an array
       # so let's coerce to an array
-      @cache[query] = [@cache[query]] unless @cache[query].is_a? Array
-      if @cache[query].count > 0 and !@cache[query].nil?
+      if @cache[query].is_a?(Array) == false
+        @cache[query] = [@cache[query]]
+      end
+      if @cache[query].count > 1 and !@cache[query].nil?
         @cache[query].sort_by!{|m| m.title.similar(query)}
         @cache[query].reverse! unless @cache[query].nil?
       end
