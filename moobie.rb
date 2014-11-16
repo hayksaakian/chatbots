@@ -45,7 +45,8 @@ class Moobie
     parts = query.split(' ')
     parts.delete_at(0)
     query = parts.join(' ')
-    @cache[query] ||= RottenMovie.find(:title => query)
+    # sort by similarity to query, because rotten tomates doesn't sort
+    @cache[query] ||= RottenMovie.find(:title => query).sort_by{|m| m.title.similar(query)}.reverse
     movies = @cache[query]
     index = 0 if index.nil?
     if index >= movies.count
@@ -64,8 +65,12 @@ class Moobie
         end
       end
     end
-    prefix = index==0 ? "" : "#{index+1}) "
-    output = "#{prefix}#{movie.title} (#{movie.year}) - critics rated: #{movie.ratings.critics_score}/100 audience rated: #{movie.ratings.audience_score}/100 - via #{movie.links.alternate}"
+    output = "#{movie.title} "
+    output << "#{index+1}) " unless index == 0
+    output << "#{movie.year} - " unless movie.year.nil?
+    output << "critics rated: #{movie.ratings.critics_score}/100 " unless movie.ratings.critics_score <= 0
+    output << "audience rated: #{movie.ratings.audience_score}/100 " unless movie.ratings.audience_score <= 0
+    output << "- via #{movie.links.alternate}"
     puts output
     # expire cache if...
     # jsn = getjson(ENDPOINT)
