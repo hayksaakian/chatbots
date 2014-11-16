@@ -30,7 +30,7 @@ class Moobie
     if @last_message.similar(msg) >= 90
       # it's too similar. so it will get the bot banned
       if index > 29
-        msg = "Out of moobies"
+        msg = "Out of moobies. too much recursion"
       else
         msg = check(query, index+1)
       end
