@@ -15,15 +15,13 @@ Dotenv.load
 require_relative 'overrustle_fetcher'
 require_relative 'jester'
 require_relative 'csgo_stats'
-require_relative 'random_aslan'
-require_relative 'notes'
+require_relative 'moobie'
 
 CHATBOTS = [
   OverrustleFetcher.new,
   Jester.new,
-  CsgoStats.new#,
-  #RandomAslan.new,
-  #Notes.new
+  CsgoStats.new,
+  Moobie.new
 ]
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
