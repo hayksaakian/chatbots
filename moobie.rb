@@ -67,7 +67,7 @@ class Moobie
       end
     end
     if @cache[query].nil? or @cache[query].count == 0
-      return "ERR: No results for your title #{@chatter}"
+      return "No results #{@chatter}"
     end
     movies = @cache[query]
     index = 0 if index.nil?
