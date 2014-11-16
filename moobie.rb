@@ -55,12 +55,12 @@ class Moobie
       # the API can return nil, a single moobie, or an array
       # so let's coerce to an array
       @cache[query] = [@cache[query]] unless @cache[query].is_a? Array
-      if @cache[query].count > 0
+      if @cache[query].count > 0 and !@cache[query].nil?
         @cache[query].sort_by!{|m| m.title.similar(query)}
         @cache[query].reverse! unless @cache[query].nil?
       end
     end
-    if @cache[query].nil?
+    if @cache[query].nil? or @cache[query].count == 0
       return "ERR: No results for #{query}"
     end
     movies = @cache[query]
