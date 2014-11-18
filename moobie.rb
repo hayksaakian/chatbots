@@ -91,7 +91,7 @@ class Moobie
     output << "#{index+1}) " unless index == 0
     output << "#{movie.title} "
     output << "(#{movie.year}) " if (!movie.year.nil? and (movie.year.to_s.length > 0))
-    output << "#{movie.runtime} min. " if (!movie.runtime.nil? and (mobie.runtime.to_s.length > 0))
+    output << "#{movie.runtime} min. " if (!movie.runtime.nil? and (movie.runtime.to_s.length > 0))
     if movie.ratings.critics_score > -1
       output << " - critics rated: #{movie.ratings.critics_score}/100 "
       output << " - audience rated: #{movie.ratings.audience_score}/100 " unless movie.ratings.audience_score <= 0
