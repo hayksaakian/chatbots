@@ -23,6 +23,7 @@ class Moobie
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @cache = {}
     @last_message = ""
+    @last_moobie = ""
   end
   def set_chatter(name)
     @chatter = name
@@ -52,7 +53,11 @@ class Moobie
     # cached = getcached(ENDPOINT)
     parts = query.split(' ')
     parts.delete_at(0)
-    query = parts.join(' ')
+    if parts.count > 0
+      query = parts.join(' ')
+    else
+      query = @last_moobie
+    end
     # sort by similarity to query, because rotten tomates doesn't sort
     if @cache[query].nil?
       @cache[query] = RottenMovie.find(:title => query)
@@ -75,6 +80,7 @@ class Moobie
       puts movies
       return "ERR: No more moobies found :("
     end
+    @last_moobie = query
     movie = movies[index]
     # because their search is bad, we'll try
     # and match the moobies year to what's specified in the 
