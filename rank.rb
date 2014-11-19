@@ -12,7 +12,7 @@ include ActionView::Helpers::DateHelper
 class Rank
   ENDPOINT = "http://overrustlelogs.net/Destinygg%20chatlog" # / #{month}
   def get_endpoint
-    return "#{ENDPOINT}/#{@now.strftime('%B %Y')}/userlogs/?C=S;O=D"
+    return "#{ENDPOINT}/#{@now.strftime('%B')}%20#{@now.strftime('%Y')}/userlogs/?C=S;O=D"
   end
   RANK_PERCENTS = [0.55, 1.36, 10.88, 15.03, 34.83, 27.28, 10.08]
   PERCENTILES = RANK_PERCENTS.map{|x| RANK_PERCENTS[0..(RANK_PERCENTS.index(x))].inject(:+)}
