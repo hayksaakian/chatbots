@@ -114,6 +114,7 @@ class Rank
         output << "SoDoge #{target}, #{pronoun} a top 3 Grand Master autist, rank #{rank}"
       end
     end
+    output << " via #{get_endpoint}"
     return output
   end
 
