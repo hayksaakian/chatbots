@@ -16,14 +16,14 @@ require_relative 'overrustle_fetcher'
 require_relative 'jester'
 require_relative 'csgo_stats'
 require_relative 'moobie'
-require_relative 'rank'
+# require_relative 'rank'
 
 CHATBOTS = [
   OverrustleFetcher.new,
   Jester.new,
   CsgoStats.new,
   Moobie.new,
-  Rank.new
+  # Rank.new
 ]
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
