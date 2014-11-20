@@ -12,19 +12,14 @@ Dotenv.load
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
-require_relative 'overrustle_fetcher'
-require_relative 'jester'
-require_relative 'csgo_stats'
-require_relative 'moobie'
-# require_relative 'rank'
+CLASSES = %w{overrustle_fetcher jester csgo_stats moobie clever}
 
-CHATBOTS = [
-  OverrustleFetcher.new,
-  Jester.new,
-  CsgoStats.new,
-  Moobie.new,
-  # Rank.new
-]
+CLASSES.each do |c|
+  require_relative c
+end
+
+# todo make the chatbot classes mutable
+CHATBOTS = CLASSES.map{|c| Object.const_get(c.camelize).new}
 
 WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil

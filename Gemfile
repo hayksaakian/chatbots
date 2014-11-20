@@ -10,3 +10,5 @@ gem 'dotenv'
 gem 'similar_text'
 gem 'rottentomatoes'
 gem 'mechanize'
+gem 'cleverbot'
+
