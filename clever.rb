@@ -46,7 +46,7 @@ class Clever
     parts.delete_at(0)
     query = parts.join(' ')
 
-    return @bot.write query
+    return "#{@bot.write(query)} #{@chatter}"
   end
 
   # safe cache! won't die if the bot dies
