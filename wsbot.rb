@@ -4,6 +4,7 @@ require 'faye/websocket'
 require 'json'
 require 'eventmachine'
 require 'dotenv'
+require 'similar_text'
 Dotenv.load
 
 # require_relative 'roulette'
@@ -12,7 +13,7 @@ Dotenv.load
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
-CLASSES = %w{overrustle_fetcher jester csgo_stats moobie clever}
+CLASSES = %w{overrustle_fetcher jester csgo_stats moobie}
 
 CLASSES.each do |c|
   require_relative c
@@ -47,7 +48,8 @@ OPTIONS = {headers:{
 GLOBALS = {
   'reconnects' => 0,
   'baddies' => [], # todo: persist this
-  'last_command' => ''
+  'last_command' => '',
+  'last_message' => ''
 }
 
 EM.run {
@@ -110,6 +112,7 @@ EM.run {
                 ws.send("MSG "+jsn.to_json)
                 p "<--- SENDING DATA !!! #{result}"
                 GLOBALS['last_caller'] = chatter_name
+                GLOBALS['last_message'] = result
               else
                 # p "nothing to send for #{p_message}"
               end
