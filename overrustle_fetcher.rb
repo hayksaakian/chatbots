@@ -9,7 +9,7 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
-  ENDPOINT = "http://overrustle.com:6081/api"
+  ENDPOINT = "http://api.overrustle.com/api"
   VALID_WORDS = %w{strim strims overrustle OverRustle blacklist_nospace}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
