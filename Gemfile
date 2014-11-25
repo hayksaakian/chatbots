@@ -11,4 +11,5 @@ gem 'similar_text'
 gem 'rottentomatoes'
 gem 'mechanize'
 gem 'cleverbot'
-
+gem 'redditkit', '~> 1.0.2'
+gem 'actionview'
