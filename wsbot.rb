@@ -13,7 +13,7 @@ Dotenv.load
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
-CLASSES = %w{overrustle_fetcher jester csgo_stats moobie}
+CLASSES = %w{overrustle_fetcher jester csgo_stats moobie reddit}
 
 CLASSES.each do |c|
   require_relative c
@@ -22,7 +22,7 @@ end
 # todo make the chatbot classes mutable
 CHATBOTS = CLASSES.map{|c| Object.const_get(c.camelize).new}
 
-WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
+WS_ENDPOINT = ENV.fetch('DESTINYGG_WS_ENDPOINT', 'ws://www.destiny.gg:9998/ws')
 PROTOCOLS = nil
 DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 

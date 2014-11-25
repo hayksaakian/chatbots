@@ -1,6 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    actionview (4.1.8)
+      activesupport (= 4.1.8)
+      builder (~> 3.1)
+      erubis (~> 2.7.0)
+    activesupport (4.1.8)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    builder (3.2.2)
     cinch (2.1.0)
     cleverbot (0.2.0)
       httparty (>= 0.8.1, < 1.0)
@@ -8,15 +19,20 @@ GEM
     domain_name (0.5.22)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (1.0.2)
+    erubis (2.7.0)
     eventmachine (1.0.3)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
     faye-websocket (0.7.5)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.3.5)
+    htmlentities (4.3.2)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     httparty (0.13.1)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
+    i18n (0.6.11)
     json (1.8.1)
     mechanize (2.7.3)
       domain_name (~> 0.5, >= 0.5.1)
@@ -29,16 +45,26 @@ GEM
       webrobots (>= 0.0.9, < 0.2)
     mime-types (2.4.3)
     mini_portile (0.5.2)
+    minitest (5.4.3)
+    multi_json (1.10.1)
     multi_xml (0.5.5)
+    multipart-post (2.0.0)
     net-http-digest_auth (1.4)
     net-http-persistent (2.9.4)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
     ntlm-http (0.1.1)
+    redditkit (1.0.2)
+      faraday (~> 0.8)
+      htmlentities (~> 4.3)
+      multi_json (~> 1.8)
     rottentomatoes (1.1.0)
       deepopenstruct (>= 0.1.2)
       json
     similar_text (0.0.4)
+    thread_safe (0.3.4)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.6)
@@ -49,11 +75,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actionview
   cinch
   cleverbot
   dotenv
   faye-websocket
   mechanize
   nokogiri (= 1.6.0)
+  redditkit (~> 1.0.2)
   rottentomatoes
   similar_text
