@@ -10,8 +10,7 @@ Dotenv.load
 puts "ARGS: #{ARGV.map{|a| a.to_s}.join(', ')}"
 
 DESTINYGG_API_KEY = (ARGV.length > 0 and !ARGV[0].nil? and ARGV[0].length > 0) ? ARGV[0] : ENV['DESTINYGG_API_KEY']
-WS_HOST = (ARGV.length > 1 and !ARGV[1].nil? and ARGV[1].length > 0) ? ARGV[1] : 'destiny.gg'
-WS_ENDPOINT = "ws://#{WS_HOST}:9998/ws"
+WS_ENDPOINT = (ARGV.length > 1 and !ARGV[1].nil? and ARGV[1].length > 0) ? "ws://#{ARGV[1]}:9998/ws" : ENV.fetch('DESTINYGG_WS_ENDPOINT', 'ws://www.destiny.gg:9998/ws')
 
 # require_relative 'roulette'
 # chatbot = Roulette.new
@@ -19,7 +18,7 @@ WS_ENDPOINT = "ws://#{WS_HOST}:9998/ws"
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
-CLASSES = %w{overrustle_fetcher jester csgo_stats moobie}
+CLASSES = %w{overrustle_fetcher jester csgo_stats moobie reddit}
 
 CLASSES.each do |c|
   require_relative c
