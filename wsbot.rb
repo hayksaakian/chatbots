@@ -7,6 +7,12 @@ require 'dotenv'
 require 'similar_text'
 Dotenv.load
 
+puts "ARGS: #{ARGV.map{|a| a.to_s}.join(', ')}"
+
+DESTINYGG_API_KEY = (ARGV.length > 0 and !ARGV[0].nil? and ARGV[0].length > 0) ? ARGV[0] : ENV['DESTINYGG_API_KEY']
+WS_HOST = (ARGV.length > 1 and !ARGV[1].nil? and ARGV[1].length > 0) ? ARGV[1] : 'destiny.gg'
+WS_ENDPOINT = "ws://#{WS_HOST}:9998/ws"
+
 # require_relative 'roulette'
 # chatbot = Roulette.new
 
@@ -22,9 +28,7 @@ end
 # todo make the chatbot classes mutable
 CHATBOTS = CLASSES.map{|c| Object.const_get(c.camelize).new}
 
-WS_ENDPOINT = 'ws://www.destiny.gg:9998/ws'
 PROTOCOLS = nil
-DESTINYGG_API_KEY = ENV['DESTINYGG_API_KEY']
 
 RATE_LIMIT = ENV.fetch('RATE_LIMIT', 14) # seconds
 ENV['last_time'] = '0'
@@ -52,6 +56,40 @@ GLOBALS = {
   'last_message' => ''
 }
 
+module MyKeyboardHandler
+  def receive_data keystrokes
+    if keystrokes == "\n"
+      message = GLOBALS['keystrokes']
+      cmd = "MSG"
+      parts = message.split(' ')
+      if message[0] == '/' 
+        if ['/whisper', '/notify'].include?(parts[0])
+          parts[0] = "/notify"
+          cmd = parts.shift
+          cmd.upcase!
+          cmd[0] = ""
+          jsn = {data: parts.join(' '), nick: parts[0]}
+        elsif parts[0] != '/me'
+          cmd = parts.shift
+          cmd.upcase!
+          cmd[0] = ""
+          jsn = {data: parts.join(' ')}
+        end
+      else
+        jsn = {data: message}
+      end
+      message = "#{cmd} "+jsn.to_json
+      GLOBALS['ws'].send(message) 
+      GLOBALS['keystrokes'] = ""
+      # puts "sending #{message}"
+    else
+      GLOBALS['keystrokes'] = "" if GLOBALS.has_key?('keystrokes') == false
+      GLOBALS['keystrokes'] << keystrokes
+    end
+    # puts "I received the following data from the keyboard: #{keystrokes}"
+  end
+end
+
 EM.run {
   def make_ws
     ws = Faye::WebSocket::Client.new(WS_ENDPOINT, PROTOCOLS, OPTIONS)
@@ -59,7 +97,6 @@ EM.run {
     ws.on :open do |event|
       p [:open]
       GLOBALS['reconnects'] = 0
-      # ws.send('Hello, world!')
     end
 
     ws.on :message do |event|
@@ -122,6 +159,9 @@ EM.run {
           end
         end
       end
+      # s = gets
+      # ujsn = {data: s}
+      # ws.send("MSG "+ujsn.to_json)
     end
 
     ws.on :close do |event|
@@ -139,6 +179,8 @@ EM.run {
     ws.on :event do |event|
       p event
     end
+    GLOBALS['ws'] = ws
+    EM.open_keyboard(MyKeyboardHandler)
   end
   make_ws
 }
