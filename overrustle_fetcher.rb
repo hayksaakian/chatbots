@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
   ENDPOINT = "http://api.overrustle.com/api"
-  VALID_WORDS = %w{strim strims overrustle OverRustle blacklist_nospace}
+  VALID_WORDS = %w{strim strims overrustle OverRustle blacklist_nospace status_api}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
@@ -38,16 +38,26 @@ class OverrustleFetcher
   end
   def trycheck(query)
     saved_filter = getcached("chat_filter") || []
-    if query =~ /^(!blacklist_nospace)/i and MODS.include?(@chatter.downcase)
-      parts = query.split(' ')
-      if parts.length < 3
-        return "#{@chatter} didn\'t format the blacklist command correctly"
+    if MODS.include?(@chatter.downcase)
+      if query =~ /^(!blacklist_nospace)/i
+        parts = query.split(' ')
+        if parts.length < 3
+          return "#{@chatter} didn\'t format the blacklist command correctly"
+        end
+        thing_to_blacklist = parts[1] + parts[2]
+        saved_filter.push(thing_to_blacklist)
+        setcached("chat_filter", saved_filter)
+        return "#{parts[1]} #{parts[2]} (no space) added to blacklist by #{@chatter}"
+      elsif query =~ /^(!status_api)/i
+        resp = open(ENDPOINT)
+        content = resp.read
+        jsn = JSON.parse(content)
+        output = "OverRustle.com API Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age "
+        output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
+        return output
       end
-      thing_to_blacklist = parts[1] + parts[2]
-      saved_filter.push(thing_to_blacklist)
-      setcached("chat_filter", saved_filter)
-      return "#{parts[1]} #{parts[2]} (no space) added to blacklist by #{@chatter}"
     end
+      
     # TODO: don't return anything if destiny is live
     output = "Top 3 OverRustle.com strims: "
     # cached = getcached(ENDPOINT)
