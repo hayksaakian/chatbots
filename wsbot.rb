@@ -18,7 +18,7 @@ WS_ENDPOINT = (ARGV.length > 1 and !ARGV[1].nil? and ARGV[1].length > 0) ? "ws:/
 # require_relative 'dcss_player'
 # chatbot = DcssPlayer.new
 
-CLASSES = %w{overrustle_fetcher jester csgo_stats moobie reddit cat_api}
+CLASSES = %w{overrustle_fetcher jester csgo_stats moobie reddit cat_api cat_facts}
 
 CLASSES.each do |c|
   require_relative c
