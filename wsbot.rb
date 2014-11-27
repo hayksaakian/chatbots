@@ -139,9 +139,9 @@ EM.run {
                 puts "set chatter name to #{chatter_name}"
               end
               cmd = p_message.split(' ').first
-
+              # for legacy api
+              chatbot.last_message = GLOBALS["last_message"] chatbot.respond_to?(:last_message=)
               result = ready(cmd) ? chatbot.check(p_message) : nil
-
               if !result.nil? and result.length > 0
                 result << suffix
                 jsn = {data: result}
@@ -149,8 +149,6 @@ EM.run {
                 p "<--- SENDING DATA !!! #{result}"
                 GLOBALS['last_caller'] = chatter_name
                 GLOBALS['last_message'] = result
-              else
-                # p "nothing to send for #{p_message}"
               end
               # if we found a matching bot, stop the loop
               break 
