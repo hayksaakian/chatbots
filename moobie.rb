@@ -17,7 +17,7 @@ class Moobie
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
-  attr_accessor :regex
+  attr_accessor :regex, :last_message
   def initialize
     Rotten.api_key = ENV['ROTTEN_TOMATOES_API_KEY']
     @regex = /^!(#{VALID_WORDS.join('|')})/i

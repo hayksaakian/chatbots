@@ -140,7 +140,7 @@ EM.run {
               end
               cmd = p_message.split(' ').first
               # for legacy api
-              chatbot.last_message = GLOBALS["last_message"] chatbot.respond_to?(:last_message=)
+              chatbot.last_message = GLOBALS["last_message"] if chatbot.respond_to?(:last_message=)
               result = ready(cmd) ? chatbot.check(p_message) : nil
               if !result.nil? and result.length > 0
                 result << suffix

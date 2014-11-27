@@ -13,7 +13,7 @@ class Reddit
   REDDIT_USER = 'NeoDestiny'
   COMMENT_LENGTH = 256
 
-  attr_accessor :regex
+  attr_accessor :regex, :last_message
 
   def initialize
     #Login not required for this

@@ -12,7 +12,7 @@ class CatApi
   ENDPOINT = "http://thecatapi.com/api/images/get"
   VALID_WORDS = %w{randomcat randomkingsly KINGSLY MotherFuckinGame CallCatz}
 
-  attr_accessor :regex
+  attr_accessor :regex, :last_message
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
   end

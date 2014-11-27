@@ -17,7 +17,7 @@ class CsgoStats
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
-  attr_accessor :regex
+  attr_accessor :regex, :last_message
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
   end
