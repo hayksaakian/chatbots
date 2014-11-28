@@ -49,25 +49,29 @@ class Youtube
     @cache[v_id] ||= YoutubeSearch.search(v_id, 'max-results' => 1).first
 
     video = @cache[v_id]
-    output = video.title
-    video.duration = video.duration.to_f
+    output = video['title']
+    video['duration'] = video['duration'].to_f
 
-    hours = (video.duration/3600.to_f).floor
+    hours = (video['duration']/3600.to_f).floor
     if hours > 0
-      output << " #{hours}h"
-      video.duration -= (hours.to_f*3600.to_f)
+      output << " #{hours.to_i}h"
+      video['duration'] -= (hours.to_f*3600.to_f)
     end
     
-    minutes = (video.duration.to_f / 60.to_f).floor
+    minutes = (video['duration'].to_f / 60.to_f).floor
     if minutes > 0
-      output << " #{minutes}m"
-      video.duration -= (minutes.to_f*60.to_f)
+      output << " #{minutes.to_i}m"
+      video['duration'] -= (minutes.to_f*60.to_f)
     end
     
     # seconds
-    if video.duration > 0
-      output << " #{video.duration}s"
+    if video['duration'] > 0
+      output << " #{video['duration'].to_i}s"
     end
+
+    # published at
+    published_at = Time.parse(video['published']).strftime("%b %d, %Y")
+    output << " published on #{published_at}"
     
     return "#{@chatter} linked #{output}"
   end
