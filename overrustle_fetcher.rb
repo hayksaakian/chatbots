@@ -49,10 +49,13 @@ class OverrustleFetcher
         setcached("chat_filter", saved_filter)
         return "#{parts[1]} #{parts[2]} (no space) added to blacklist by #{@chatter}"
       elsif query =~ /^(!status_api)/i
+        start_time = Time.now
         resp = open(ENDPOINT)
         content = resp.read
+        request_duration = Time.now - start_time
+        request_duration = (request_duration.round(3)*1000).round
         jsn = JSON.parse(content)
-        output = "OverRustle.com API Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age "
+        output = "OverRustle.com API Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration"
         output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
         return output
       end
