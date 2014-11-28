@@ -49,6 +49,7 @@ class Youtube
     @cache[v_id] ||= YoutubeSearch.search(v_id, 'max-results' => 1).first
 
     video = @cache[v_id]
+    return nil if video.nil?
     output = video['title']
     video['duration'] = video['duration'].to_f
 
