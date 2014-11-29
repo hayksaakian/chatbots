@@ -91,9 +91,10 @@ class OverrustleFetcher
     to_remove.reverse.each{|tr| list_of_lists.delete_at(tr)}
     # puts list_of_lists
     # map to sexy urls
+    short_domain = "rustle.sexy"
     list_of_lists = list_of_lists.map do |sl|
       u = URI.parse(sl[0])
-      puts u.path
+      # puts u.path
       if !['/destinychat', '/channel'].include?(u.path)
         sl[0] = "overrustle.com" + sl[0]
       else
@@ -104,7 +105,7 @@ class OverrustleFetcher
             kvs = pt.split("=")
             channel = kvs[1] if kvs[0] == 'user'
           end
-          sl[0] = "rustle.sexy/#{channel}"
+          sl[0] = "#{short_domain}/#{channel}"
         elsif u.path == '/destinychat'
           channel = ""
           platform = ""
@@ -114,10 +115,10 @@ class OverrustleFetcher
             channel = kvs[1] if kvs[0] == 'stream'
           end
           platform = platform == 'twitch-vod' ? 'v' : platform[0]
-          sl[0] = "rustle.sexy/#{platform}/#{channel}"
+          sl[0] = "#{short_domain}/#{platform}/#{channel}"
         end
       end
-      puts sl
+      # puts sl
       sl
     end
 
