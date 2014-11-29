@@ -22,6 +22,7 @@ class Youtube
     @regex = REGEX
     @cache = {}
     @last_message = ""
+    @chatter = ""
   end
   def set_chatter(name)
     @chatter = name
@@ -29,6 +30,7 @@ class Youtube
   def check(query)
     msg = trycheck(query)
     # don't bother saying anything if we already linked it
+    puts "too similar: #{msg}" 
     return nil if @last_message.similar(msg) > 95
     @last_message = msg
     return msg
@@ -46,56 +48,59 @@ class Youtube
     uri = URI.parse(found_link)
     v_id = uri.query.split('&').select {|a| a.start_with? 'v='}[0]
 
-    @cache[v_id] ||= YoutubeSearch.search(v_id, 'max-results' => 1).first
+    @cached_json = cached
+    video = nil
 
-    video = @cache[v_id]
-    return nil if video.nil?
+    if @cached_json.has_key?(v_id)
+      video = @cached_json[v_id]
+    else
+      video = YoutubeSearch.search(v_id, 'max-results' => 1).first
+      @cached_json[v_id] = JSON.parse(video.to_json)
+      cached = @cached_json
+    end
+    return "No video found for id: #{v_id} SoSad #{@chatter}" if video.nil?
     output = video['title']
     video['duration'] = video['duration'].to_f
 
     hours = (video['duration']/3600.to_f).floor
     if hours > 0
-      output << " #{hours.to_i}h"
+      output = output + " #{hours.to_i}h"
       video['duration'] -= (hours.to_f*3600.to_f)
     end
     
     minutes = (video['duration'].to_f / 60.to_f).floor
     if minutes > 0
-      output << " #{minutes.to_i}m"
+      output = output + " #{minutes.to_i}m"
       video['duration'] -= (minutes.to_f*60.to_f)
     end
     
     # seconds
     if video['duration'] > 0
-      output << " #{video['duration'].to_i}s"
+      output = output + " #{video['duration'].to_i}s"
     end
 
     # published at
     published_at = Time.parse(video['published']).strftime("%b %d, %Y")
-    output << " published on #{published_at}"
-    
-    return "#{@chatter} linked #{output}"
+    output = output + " published on #{published_at}"
+    output = "#{@chatter} linked " + output
+    return output
   end
 
   # safe cache! won't die if the bot dies
-  def getcached(url)
+  def cached
     return @cached_json if !@cached_json.nil?
-    path = CACHE_FILE + url + ".json"
+    path = CACHE_FILE + "youtube.json"
     if File.exists?(path)
       f = File.open(path)
       return JSON.parse(f.read)
     end
-    return nil
+    return {}
   end
-  def setcached(url, jsn)
+  def cached=(jsn)
     @cached_json = jsn
-    path = CACHE_FILE + url + ".json"
+    path = CACHE_FILE + "youtube.json"
     File.open(path, 'w') do |f2|
       f2.puts JSON.unparse(jsn)
     end
-  end
-
-  def hashed(url)
-    return Digest::MD5.hexdigest(url).to_s
   end
 end
