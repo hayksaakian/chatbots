@@ -22,6 +22,7 @@ class OverrustleFetcher
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
+    @chatter = ""
   end
   def set_chatter(name)
     @chatter = name
@@ -88,22 +89,53 @@ class OverrustleFetcher
     end
     # go from back to front so the index doesn't mess up
     to_remove.reverse.each{|tr| list_of_lists.delete_at(tr)}
+    # puts list_of_lists
+    # map to sexy urls
+    list_of_lists = list_of_lists.map do |sl|
+      u = URI.parse(sl[0])
+      puts u.path
+      if !['/destinychat', '/channel'].include?(u.path)
+        sl[0] = "overrustle.com" + sl[0]
+      else
+        parts = u.query.split('&')
+        if u.path == '/channel'
+          channel = ""
+          parts.each do |pt|
+            kvs = pt.split("=")
+            channel = kvs[1] if kvs[0] == 'user'
+          end
+          sl[0] = "rustle.sexy/#{channel}"
+        elsif u.path == '/destinychat'
+          channel = ""
+          platform = ""
+          parts.each do |pt|
+            kvs = pt.split("=")
+            platform = kvs[1] if kvs[0] == 's'
+            channel = kvs[1] if kvs[0] == 'stream'
+          end
+          platform = platform == 'twitch-vod' ? 'v' : platform[0]
+          sl[0] = "rustle.sexy/#{platform}/#{channel}"
+        end
+      end
+      puts sl
+      sl
+    end
 
     list_of_lists.take(3).each do |sl|
-      output << "\noverrustle.com#{sl[0]} has #{sl[1]} | "
+      output << "#{sl[0]} has #{sl[1]} | "
     end
     if list_of_lists.length > 3
       wildcard = list_of_lists.drop(3).sample
-      output << "\n Wild Card - overrustle.com#{wildcard[0]}"
+      output << " Wild Card - #{wildcard[0]}"
     end
 
     # it's too similar. so it will get the bot banned
     # get the next 3
     if @last_message.similar(output) >= 90
       output = "Full Strim List - overrustle.com/strims"
-      output << "\n #4 to #6  :"
+      output << " #4 to #6  :"
       list_of_lists.drop(3).take(3).each do |sl|
-        output << "\noverrustle.com#{sl[0]} has #{sl[1]} | "
+        output << " #{sl[0]} has #{sl[1]} | "
       end
     end
 
