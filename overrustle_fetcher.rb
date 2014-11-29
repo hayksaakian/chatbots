@@ -91,7 +91,7 @@ class OverrustleFetcher
     to_remove.reverse.each{|tr| list_of_lists.delete_at(tr)}
     # puts list_of_lists
     # map to sexy urls
-    short_domain = "rustle.sexy"
+    short_domain = "api.overrustle.com"
     list_of_lists = list_of_lists.map do |sl|
       u = URI.parse(sl[0])
       # puts u.path
