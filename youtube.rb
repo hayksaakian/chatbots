@@ -88,7 +88,7 @@ class Youtube
 
   # safe cache! won't die if the bot dies
   def cached
-    return getcached('youtube') or {}
+    return getcached('youtube') || {}
   end
   def cached=(jsn)
     setcached('youtube', jsn)
