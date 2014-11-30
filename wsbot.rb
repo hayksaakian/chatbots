@@ -32,6 +32,9 @@ CLASSES = %w{
 CLASSES.each do |c|
   require_relative c
 end
+require_relative 'moderation'
+
+MODERATION = Moderation.new
 
 # todo make the chatbot classes mutable
 CHATBOTS = CLASSES.map{|c| Object.const_get(c.camelize).new}
