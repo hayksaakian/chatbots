@@ -55,10 +55,13 @@ class Youtube
       video = @cached_json[v_id]
     else
       video = YoutubeSearch.search(v_id, 'max-results' => 1).first
-      @cached_json[v_id] = JSON.parse(video.to_json)
-      cached = @cached_json
+      if video.nil?
+        return "No video found for id: #{v_id} SoSad #{@chatter}"
+      else
+        @cached_json[v_id] = JSON.parse(video.to_json)
+        cached = @cached_json
+      end
     end
-    return "No video found for id: #{v_id} SoSad #{@chatter}" if video.nil?
     output = "\n#{video['title']}\n"
     video['duration'] = video['duration'].to_f
 
@@ -113,7 +116,7 @@ class Youtube
       f2.puts JSON.unparse(jsn)
     end
   end
-  
+
   def hashed(url)
     return Digest::MD5.hexdigest(url).to_s
   end
