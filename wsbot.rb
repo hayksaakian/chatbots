@@ -154,6 +154,10 @@ EM.run {
               result = ready(cmd) ? chatbot.check(p_message) : nil
               if !result.nil? and result.length > 0
                 result << suffix
+                # check for safety
+                parts = result.split("\n")
+                parts.delete_if{|pt| !MODERATION.safe?(pt)}
+                result = parts.join("\n")
                 jsn = {data: result}
                 ws.send("MSG "+jsn.to_json)
                 p "<--- SENDING DATA !!! #{result}"

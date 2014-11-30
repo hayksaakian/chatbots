@@ -103,11 +103,11 @@ class OverrustleFetcher
     end
 
     list_of_lists.take(3).each do |sl|
-      output << "#{sl[0]} has #{sl[1]} | "
+      output << "\n#{sl[0]} has #{sl[1]} | "
     end
     if list_of_lists.length > 3
       wildcard = list_of_lists.drop(3).sample
-      output << " Wild Card - #{wildcard[0]}"
+      output << " \nWild Card - #{wildcard[0]}"
     end
 
     # it's too similar. so it will get the bot banned
@@ -116,12 +116,12 @@ class OverrustleFetcher
       output = "Full Strim List - overrustle.com/strims"
       output << " #4 to #6  :"
       list_of_lists.drop(3).take(3).each do |sl|
-        output << " #{sl[0]} has #{sl[1]} | "
+        output << " \n#{sl[0]} has #{sl[1]} | "
       end
     end
 
     if @last_message.similar(output) >= 80
-      output = "Check out Overrustle.com/strims for more strims. RustleBot by hephaestus."
+      output = "\nCheck out Overrustle.com/strims for more strims. RustleBot by hephaestus."
     end
 
     return output

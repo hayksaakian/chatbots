@@ -21,9 +21,15 @@ class Moderation
     @chatter = ""
   end
   def ignored?(name)
-    thelist = baddies
-    thelist ||= []
+    thelist = baddies || []
     return thelist.include?(name)
+  end
+  def safe?(line)
+    thelist = chat_filter || []
+    thelist.each do |l|
+      return false if line =~ /#{l}/i
+    end
+    return true
   end
   def check(query)
     m = trycheck(query)
