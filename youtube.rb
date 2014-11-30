@@ -59,7 +59,7 @@ class Youtube
       cached = @cached_json
     end
     return "No video found for id: #{v_id} SoSad #{@chatter}" if video.nil?
-    output = video['title']
+    output = "\n#{video['title']}\n"
     video['duration'] = video['duration'].to_f
 
     hours = (video['duration']/3600.to_f).floor
