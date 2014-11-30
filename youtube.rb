@@ -113,4 +113,9 @@ class Youtube
       f2.puts JSON.unparse(jsn)
     end
   end
+  
+  def hashed(url)
+    return Digest::MD5.hexdigest(url).to_s
+  end
+
 end
