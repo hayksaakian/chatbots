@@ -130,9 +130,7 @@ EM.run {
           elsif event.data.match /muted/i
             baderror = true
             puts '---> Muted'
-            if GLOBALS.has_key?('last_caller')
-              GLOBALS['baddies'] << GLOBALS['last_caller']
-            end
+            MODERATION.check("!ignore #{GLOBALS['last_caller']}")
           end
         else
           # removes their name from the message, i think?
@@ -143,7 +141,7 @@ EM.run {
           p_message = parsed_message["data"]
           chatter_name = parsed_message["nick"]
         end
-        if !baderror and !GLOBALS['baddies'].include?(chatter_name) and !p_message.nil? and p_message.is_a?(String)
+        if !baderror and !MODERATION.ignored?(chatter_name) and !p_message.nil? and p_message.is_a?(String)
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
               if chatbot.respond_to?(:set_chatter) 

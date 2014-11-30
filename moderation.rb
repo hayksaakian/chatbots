@@ -20,8 +20,10 @@ class Moderation
     @last_message = ""
     @chatter = ""
   end
-  def set_chatter(name)
-    @chatter = name
+  def ignored?(name)
+    thelist = baddies
+    thelist ||= []
+    return thelist.include?(name)
   end
   def check(query)
     m = trycheck(query)
@@ -85,7 +87,7 @@ class Moderation
   end
 
   def baddies
-    getcached('baddies')
+    return getcached('baddies') || []
   end
   def baddies=(jsn)
     setcached('baddies', jsn)
