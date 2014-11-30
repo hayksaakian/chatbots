@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
   ENDPOINT = "http://api.overrustle.com/api"
-  VALID_WORDS = %w{strim strims overrustle OverRustle blacklist_nospace status_api}
+  VALID_WORDS = %w{strim strims overrustle OverRustle status_api}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
