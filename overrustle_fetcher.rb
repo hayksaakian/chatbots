@@ -39,27 +39,16 @@ class OverrustleFetcher
   end
   def trycheck(query)
     saved_filter = getcached("chat_filter") || []
-    if MODS.include?(@chatter.downcase)
-      if query =~ /^(!blacklist_nospace)/i
-        parts = query.split(' ')
-        if parts.length < 3
-          return "#{@chatter} didn\'t format the blacklist command correctly"
-        end
-        thing_to_blacklist = parts[1] + parts[2]
-        saved_filter.push(thing_to_blacklist)
-        setcached("chat_filter", saved_filter)
-        return "#{parts[1]} #{parts[2]} (no space) added to blacklist by #{@chatter}"
-      elsif query =~ /^(!status_api)/i
-        start_time = Time.now
-        resp = open(ENDPOINT)
-        content = resp.read
-        request_duration = Time.now - start_time
-        request_duration = (request_duration.round(3)*1000).round
-        jsn = JSON.parse(content)
-        output = "OverRustle.com API Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration "
-        output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
-        return output
-      end
+    if MODS.include?(@chatter.downcase) and query =~ /^(!status_api)/i
+      start_time = Time.now
+      resp = open(ENDPOINT)
+      content = resp.read
+      request_duration = Time.now - start_time
+      request_duration = (request_duration.round(3)*1000).round
+      jsn = JSON.parse(content)
+      output = "api.overrustle.com Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration "
+      output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
+      return output
     end
       
     # TODO: don't return anything if destiny is live
@@ -67,16 +56,7 @@ class OverrustleFetcher
     # cached = getcached(ENDPOINT)
     # expire cache if...
     jsn = getjson(ENDPOINT)
-    # if cached.nil? or cached["date"] < Time.now.to_i - CACHE_DURATION
-    #   jsn = getjson(ENDPOINT)
-    #   if jsn.nil?
-    #     raise "Bad JSON from API"
-    #   else
-    #     setcached(ENDPOINT, jsn)
-    #   end
-    # else
-    #   jsn = cached
-    # end
+
     filtered_strims = FILTERED_STRIMS + saved_filter
     strims = jsn["streams"]
     list_of_lists = strims.sort_by{|k,v| -(v).to_i}
@@ -154,17 +134,20 @@ class OverrustleFetcher
 
   # safe cache! won't die if the bot dies
   def getcached(url)
-    return @cached_json if !@cached_json.nil?
-    path = CACHE_FILE + url + ".json"
+    _cached = instance_variable_get "@cached_#{hashed(url)}"
+    return _cached unless _cached.nil?
+    path = CACHE_FILE + "#{url}.json"
     if File.exists?(path)
       f = File.open(path)
-      return JSON.parse(f.read)
+      _cached = JSON.parse(f.read)
+      instance_variable_set("@cached_#{hashed(url)}", _cached)
+      return _cached
     end
     return nil
   end
   def setcached(url, jsn)
-    @cached_json = jsn
-    path = CACHE_FILE + url + ".json"
+    instance_variable_set("@cached_#{hashed(url)}", jsn)
+    path = CACHE_FILE + "#{url}.json"
     File.open(path, 'w') do |f2|
       f2.puts JSON.unparse(jsn)
     end

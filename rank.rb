@@ -117,20 +117,23 @@ class Rank
     output << " via #{get_endpoint}"
     return output
   end
-
+  
   # safe cache! won't die if the bot dies
   def getcached(url)
-    return @cached_json if !@cached_json.nil?
-    path = CACHE_FILE + url + ".json"
+    _cached = instance_variable_get "@cached_#{hashed(url)}"
+    return _cached unless _cached.nil?
+    path = CACHE_FILE + "#{url}.json"
     if File.exists?(path)
       f = File.open(path)
-      return JSON.parse(f.read)
+      _cached = JSON.parse(f.read)
+      instance_variable_set("@cached_#{hashed(url)}", _cached)
+      return _cached
     end
     return nil
   end
   def setcached(url, jsn)
-    @cached_json = jsn
-    path = CACHE_FILE + url + ".json"
+    instance_variable_set("@cached_#{hashed(url)}", jsn)
+    path = CACHE_FILE + "#{url}.json"
     File.open(path, 'w') do |f2|
       f2.puts JSON.unparse(jsn)
     end
