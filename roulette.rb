@@ -80,7 +80,7 @@ class Roulette
   def getcached(url)
     _cached = instance_variable_get "@cached_#{hashed(url)}"
     return _cached unless _cached.nil?
-    path = CACHE_FILE + "#{url}.json"
+    path = CACHE_FILE + "#{hashed(url)}.json"
     if File.exists?(path)
       f = File.open(path)
       _cached = JSON.parse(f.read)
@@ -91,7 +91,7 @@ class Roulette
   end
   def setcached(url, jsn)
     instance_variable_set("@cached_#{hashed(url)}", jsn)
-    path = CACHE_FILE + "#{url}.json"
+    path = CACHE_FILE + "#{hashed(url)}.json"
     File.open(path, 'w') do |f2|
       f2.puts JSON.unparse(jsn)
     end
