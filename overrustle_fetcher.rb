@@ -166,10 +166,11 @@ class OverrustleFetcher
     return _cached unless _cached.nil?
     path = CACHE_FILE + "#{hashed(url)}.json"
     if File.exists?(path)
-      f = File.open(path)
-      _cached = JSON.parse(f.read)
-      instance_variable_set("@cached_#{hashed(url)}", _cached)
-      return _cached
+      File.open(path, "r:UTF-8") do |f|
+        _cached = JSON.parse(f.read)
+        instance_variable_set("@cached_#{hashed(url)}", _cached)
+        return _cached
+      end 
     end
     return nil
   end
