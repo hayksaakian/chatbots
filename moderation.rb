@@ -24,11 +24,11 @@ class Moderation
     @chatter = name
   end
   def ignored?(name)
-    thelist = baddies || []
+    thelist = self.baddies || []
     return thelist.include?(name)
   end
   def safe?(line)
-    thelist = chat_filter || []
+    thelist = self.chat_filter || []
     thelist.each do |l|
       return false if line =~ /#{l}/i
     end
@@ -48,34 +48,34 @@ class Moderation
     if MODS.include?(@chatter.downcase)
       parts = query.split(' ')
       if query =~ /^(!blacklist_nospace)/i
-        saved_filter = chat_filter || []
+        saved_filter = self.chat_filter || []
         if parts.length < 3
           return "#{@chatter} didn\'t format the blacklist command correctly"
         end
         thing_to_blacklist = parts[1] + parts[2]
         saved_filter.push(thing_to_blacklist)
-        chat_filter = saved_filter
+        self.chat_filter = saved_filter
         return "#{parts[1]} #{parts[2]} (no space) added to blacklist by #{@chatter}"
       elsif query =~ /^(!unblacklist)/
-        saved_filter = chat_filter || []
+        saved_filter = self.chat_filter || []
         if parts.length < 2
           return "#{@chatter} didn\'t format the blacklist command correctly"
         end
         saved_filter.push(parts[1])
-        chat_filter = saved_filter
+        self.chat_filter = saved_filter
         return "#{parts[1]} removed from the blacklist by #{@chatter}"
       elsif query =~ /^(!(ignore|unignore))/i
-        saved_list = baddies || []
+        saved_list = self.baddies || []
         if parts.length < 2
           return "#{@chatter} didn\'t format the ignore or unignore command correctly"
         end
         if query =~ /^(!ignore)/i
           saved_list.push(parts[1])
-          baddies = saved_list
+          self.baddies = saved_list
           return "/me is ignoring #{parts[1]} according to #{@chatter}"
         else
           saved_list.delete(parts[1])
-          baddies = saved_list
+          self.baddies = saved_list
           return "/me stopped ignoring #{parts[1]} according to #{@chatter}"
         end
       end

@@ -51,8 +51,8 @@ class OverrustleFetcher
         output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
         return output
       elsif query =~ /^(!(enable_strims|disable_strims))/i
-        strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
-        word = strims_enabled ? 'enabled' : 'disabled'
+        self.strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
+        word = self.strims_enabled ? 'enabled' : 'disabled'
         # true if it's !enable, false otherwise
         return "!strims #{word} by #{@chatter}"
       end
@@ -149,8 +149,8 @@ class OverrustleFetcher
     v = getcached('strims_enabled')
     # set default
     if v.nil? 
-      setcached('strims_enabled', {'enabled' => true})
-      v = getcached('strims_enabled')
+      self.setcached('strims_enabled', {'enabled' => true})
+      v = self.getcached('strims_enabled')
     end
     return v['enabled']
   end

@@ -50,7 +50,7 @@ class Youtube
     uri = URI.parse(found_link)
     v_id = uri.query.split('&').select {|a| a.start_with? 'v='}[0]
 
-    @cached_json = cached
+    @cached_json = self.cached
     video = nil
 
     if @cached_json.has_key?(v_id)
@@ -61,7 +61,7 @@ class Youtube
         return "No video found for id: #{v_id} SoSad #{@chatter}"
       else
         @cached_json[v_id] = JSON.parse(video.to_json)
-        cached = @cached_json
+        self.cached = @cached_json
       end
     end
     output = "\n#{video['title']}\n"
