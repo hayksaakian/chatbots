@@ -20,6 +20,9 @@ class Moderation
     @last_message = ""
     @chatter = ""
   end
+  def set_chatter(name)
+    @chatter = name
+  end
   def ignored?(name)
     thelist = baddies || []
     return thelist.include?(name)

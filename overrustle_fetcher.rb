@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
   ENDPOINT = "http://api.overrustle.com/api"
-  VALID_WORDS = %w{strim strims overrustle OverRustle status_api}
+  VALID_WORDS = %w{strim strims overrustle OverRustle status_api enable_strims disable_strims}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
@@ -23,6 +23,7 @@ class OverrustleFetcher
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
     @chatter = ""
+    @enabled = true
   end
   def set_chatter(name)
     @chatter = name
@@ -39,18 +40,29 @@ class OverrustleFetcher
   end
   def trycheck(query)
     saved_filter = getcached("chat_filter") || []
-    if MODS.include?(@chatter.downcase) and query =~ /^(!status_api)/i
-      start_time = Time.now
-      resp = open(ENDPOINT)
-      content = resp.read
-      request_duration = Time.now - start_time
-      request_duration = (request_duration.round(3)*1000).round
-      jsn = JSON.parse(content)
-      output = "api.overrustle.com Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration "
-      output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
-      return output
+    if MODS.include?(@chatter.downcase) 
+      if query =~ /^(!status_api)/i
+        start_time = Time.now
+        resp = open(ENDPOINT)
+        content = resp.read
+        request_duration = Time.now - start_time
+        request_duration = (request_duration.round(3)*1000).round
+        jsn = JSON.parse(content)
+        output = "api.overrustle.com Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration "
+        output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
+        return output
+      elsif query =~ /^(!(enable_strims|disable_strims))/i
+        strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
+        # true if it's !enable, false otherwise
+        return "!strims disabled by #{@chatter}"
+      end
     end
-      
+    if strims_enabled == false
+      output = "!strims is currently disabled, but #{@chatter} called it anyway"
+      puts output
+      return output if MODS.include?(@chatter.downcase)
+      return nil
+    end
     # TODO: don't return anything if destiny is live
     output = "Top 3 OverRustle.com strims: "
     # cached = getcached(ENDPOINT)
@@ -130,6 +142,22 @@ class OverrustleFetcher
   def getjson(url)
     content = open(url).read
     return JSON.parse(content)
+  end
+
+  def strims_enabled
+    v = getcached('strims_enabled')
+    # set default
+    if v.nil? 
+      setcached('strims_enabled', {enabled: true})
+      v = getcached('strims_enabled')
+    end
+    return v[:enabled]
+  end
+
+  def strims_enabled=(bool)
+    # coerce to bool because doriots
+    bool = (bool != false)
+    setcached('strims_enabled', {enabled: bool})
   end
 
   # safe cache! won't die if the bot dies

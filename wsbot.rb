@@ -41,6 +41,8 @@ CHATBOTS = CLASSES.map{|c| Object.const_get(c.camelize).new}
 
 CHATBOTS << MODERATION
 
+puts CHATBOTS
+
 PROTOCOLS = nil
 
 RATE_LIMIT = ENV.fetch('RATE_LIMIT', 14) # seconds
