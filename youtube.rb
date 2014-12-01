@@ -30,8 +30,10 @@ class Youtube
   def check(query)
     msg = trycheck(query)
     # don't bother saying anything if we already linked it
-    puts "too similar: #{msg}" 
-    return nil if @last_message.similar(msg) > 95
+    if @last_message.similar(msg) > 95
+      puts "too similar: #{msg}" 
+      return nil 
+    end
     @last_message = msg
     return msg
   rescue Exception => e

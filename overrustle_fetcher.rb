@@ -148,7 +148,7 @@ class OverrustleFetcher
     v = getcached('strims_enabled')
     # set default
     if v.nil? 
-      setcached('strims_enabled', {enabled: true})
+      setcached('strims_enabled', {'enabled' => true})
       v = getcached('strims_enabled')
     end
     return v[:enabled]
@@ -156,7 +156,7 @@ class OverrustleFetcher
 
   def strims_enabled=(bool)
     # coerce to bool because doriots
-    bool = (bool != false)
+    bool = (bool == true)
     setcached('strims_enabled', {enabled: bool})
   end
 
