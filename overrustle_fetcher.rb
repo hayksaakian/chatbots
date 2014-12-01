@@ -53,8 +53,9 @@ class OverrustleFetcher
         return output
       elsif query =~ /^(!(enable_strims|disable_strims))/i
         strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
+        word = strims_enabled ? 'enabled' : 'disabled'
         # true if it's !enable, false otherwise
-        return "!strims disabled by #{@chatter}"
+        return "!strims #{word} by #{@chatter}"
       end
     end
     if strims_enabled == false
@@ -151,13 +152,13 @@ class OverrustleFetcher
       setcached('strims_enabled', {'enabled' => true})
       v = getcached('strims_enabled')
     end
-    return v[:enabled]
+    return v['enabled']
   end
 
   def strims_enabled=(bool)
     # coerce to bool because doriots
     bool = (bool == true)
-    setcached('strims_enabled', {enabled: bool})
+    setcached('strims_enabled', {'enabled' => bool})
   end
 
   # safe cache! won't die if the bot dies
