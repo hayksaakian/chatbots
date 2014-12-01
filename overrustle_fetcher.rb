@@ -57,7 +57,8 @@ class OverrustleFetcher
         return "!strims #{word} by #{@chatter}"
       end
     end
-    if strims_enabled == false
+
+    if self.strims_enabled == false
       output = "!strims is currently disabled, but #{@chatter} called it anyway"
       puts output
       return output if MODS.include?(@chatter.downcase)
