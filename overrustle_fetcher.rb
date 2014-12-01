@@ -23,7 +23,6 @@ class OverrustleFetcher
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
     @chatter = ""
-    @enabled = true
   end
   def set_chatter(name)
     @chatter = name
