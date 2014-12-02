@@ -78,6 +78,10 @@ class OverrustleFetcher
     list_of_lists.each_with_index do |sl, i|
       if sl[0] =~ /(#{filtered_strims.join('|')})/i
         to_remove << i
+      else
+        metakey = jsn['metaindex'][sl[0]]
+        md = jsn['metadata'][metakey]
+        to_remove << i if md['live'] == false
       end
     end
     # go from back to front so the index doesn't mess up
