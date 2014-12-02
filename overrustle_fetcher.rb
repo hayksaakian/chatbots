@@ -79,9 +79,13 @@ class OverrustleFetcher
       if sl[0] =~ /(#{filtered_strims.join('|')})/i
         to_remove << i
       else
-        metakey = jsn['metaindex'][sl[0]]
-        md = jsn['metadata'][metakey]
-        to_remove << i if md['live'] == false
+        if jsn.key?('metaindex') and jsn['metaindex'].key?(sl[0])
+          metakey = jsn['metaindex'][sl[0]]
+          if jsn['metadata'].key?(metakey)
+            md = jsn['metadata'][metakey]
+            to_remove << i if (md.key?('live') and md['live'] == false)
+          end
+        end
       end
     end
     # go from back to front so the index doesn't mess up

@@ -134,8 +134,9 @@ EM.run {
           elsif event.data.match /muted/i
             baderror = true
             puts '---> Muted'
-            MODERATION.check("!ignore #{GLOBALS['last_caller']}")
-            GLOBALS['last_caller'] = ''
+            # this is broken, because it's one person too late
+            # MODERATION.check("!ignore #{GLOBALS['last_caller']}")
+            # GLOBALS['last_caller'] = ''
           end
         else
           # removes their name from the message, i think?

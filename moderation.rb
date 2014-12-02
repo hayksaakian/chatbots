@@ -61,7 +61,7 @@ class Moderation
         if parts.length < 2
           return "#{@chatter} didn\'t format the blacklist command correctly"
         end
-        saved_filter.push(parts[1])
+        saved_filter.delete(parts[1])
         self.chat_filter = saved_filter
         return "#{parts[1]} removed from the blacklist by #{@chatter}"
       elsif query =~ /^(!(ignore|unignore))/i
