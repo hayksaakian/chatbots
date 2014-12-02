@@ -24,9 +24,7 @@ CLASSES = %w{
   csgo_stats 
   moobie 
   reddit 
-  cat_api 
   cat_facts 
-  youtube
 }
 
 CLASSES.each do |c|
