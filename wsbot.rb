@@ -135,6 +135,7 @@ EM.run {
             baderror = true
             puts '---> Muted'
             MODERATION.check("!ignore #{GLOBALS['last_caller']}")
+            GLOBALS['last_caller'] = ''
           end
         else
           # removes their name from the message, i think?
