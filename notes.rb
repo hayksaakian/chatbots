@@ -15,6 +15,7 @@ class Notes
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/commands/"
 
+  attr_accessor :chatter
   def initialize
     @last_message = ""
   end
@@ -25,14 +26,11 @@ class Notes
     re = /^!(#{(VALID_WORDS+words).join('|')})/i
     return re
   end
-  def set_chatter(name)
-    @chatter_name = name
-  end
   def check(query)
     m = trycheck(query)
     if @last_message.similar(m) >= 97
       # it's too similar. so it will get the bot banned
-      m = "I literally just said that, #{@chatter_name}. "
+      m = "I literally just said that, #{@chatter}. "
       m << %w{MotherFuckinGame UWOTM8 NoTears CallCatz}.sample
     end
     @last_message = m
@@ -54,7 +52,7 @@ class Notes
       # !set animu check out the animue here: google.com
 
       if parts.length < 2
-        return "#{@chatter_name}, you did it wrong. see !help"
+        return "#{@chatter}, you did it wrong. see !help"
       end
       keyword = parts[1].downcase
       note = getcached("commands_#{keyword}")
@@ -63,21 +61,21 @@ class Notes
       # !release animu
       if command == 'release'
         if note == nil
-          return "#{@chatter_name}, you cannot release an unclaimed command like #{keyword}."
-        elsif note['owner'] == @chatter_name
+          return "#{@chatter}, you cannot release an unclaimed command like #{keyword}."
+        elsif note['owner'] == @chatter
           deletecached("commands_#{keyword}")
-          return "#{@chatter_name}, you no longer control #{keyword}"
+          return "#{@chatter}, you no longer control #{keyword}"
         else
-          return "#{@chatter_name}, you are not allowed to release #{keyword}"
+          return "#{@chatter}, you are not allowed to release #{keyword}"
         end
       end
 
       # unclaimed
       if parts.length < 3
-        return "#{@chatter_name}, you did it wrong. see !help"
+        return "#{@chatter}, you did it wrong. see !help"
       end
-      whitelisted = WHITELISTED_USERS.include?(@chatter_name.downcase)
-      if note == nil or note['owner'] == @chatter_name or whitelisted
+      whitelisted = WHITELISTED_USERS.include?(@chatter.downcase)
+      if note == nil or note['owner'] == @chatter or whitelisted
         if note == nil
           is_new = true
           note = {}
@@ -88,10 +86,10 @@ class Notes
         if command == 'transfer'
           new_owner = parts[2]
           note['owner'] = new_owner
-          note['message'] ||= "#{@chatter_name} gave #{new_owner} this command without setting a message"
+          note['message'] ||= "#{@chatter} gave #{new_owner} this command without setting a message"
         elsif command == 'set'
           message = query.partition(/(#{keyword})/i).last.strip
-          note['owner'] = @chatter_name
+          note['owner'] = @chatter
           note['message'] = message
         end
         note['command'] ||= keyword
@@ -104,20 +102,20 @@ class Notes
         setcached('commands', all_commands)
 
         if command == 'transfer'
-          return "#{@chatter_name} transfered !#{keyword} to #{note['owner']}"
+          return "#{@chatter} transfered !#{keyword} to #{note['owner']}"
         else
-          return "Now, !#{keyword} says what #{@chatter_name} just said"
+          return "Now, !#{keyword} says what #{@chatter} just said"
         end
       else
-        return "#{note['owner']} owns this command. gtfo #{@chatter_name}"
+        return "#{note['owner']} owns this command. gtfo #{@chatter}"
       end
     elsif %w{mycommands commands}.include?(command)
       all_commands = getcached('commands')
       all_commands ||= []
       preput = ""
       if command == "mycommands"
-        all_commands.select!{|c| c['owner']==@chatter_name}
-        preput = "#{@chatter_name}\'s commands (prefix with !):"
+        all_commands.select!{|c| c['owner']==@chatter}
+        preput = "#{@chatter}\'s commands (prefix with !):"
       else
         preput = "All Commands (prefix with !):"
       end
@@ -128,7 +126,7 @@ class Notes
     else
       note = getcached("commands_#{command}")
       if note == nil
-        return "No one has claimed !#{command} yet. see !help for more info #{@chatter_name}"
+        return "No one has claimed !#{command} yet. see !help for more info #{@chatter}"
       else
         return "#{note['owner']}: #{note['message']}"
       end

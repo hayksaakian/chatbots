@@ -19,14 +19,11 @@ class Clever
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
-  attr_accessor :regex, :last_message
+  attr_accessor :regex, :last_message, :chatter
   def initialize
     @bot = Cleverbot::Client.new # note casing!
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
-  end
-  def set_chatter(name)
-    @chatter = name
   end
   def check(query)
     m = trycheck(query)

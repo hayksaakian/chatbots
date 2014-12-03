@@ -16,13 +16,10 @@ class Jester
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
-  attr_accessor :regex, :last_message
+  attr_accessor :regex, :last_message, :chatter
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
-  end
-  def set_chatter(name)
-    @chatter_name = name
   end
   def check(query)
     m = trycheck(query)
@@ -49,7 +46,7 @@ class Jester
     end
     # if jester is setting the number
     parts = query.split(' ')
-    if @chatter_name == ENDPOINT and parts.length > 1
+    if @chatter == ENDPOINT and parts.length > 1
       m_num = parts[1]
       puts "jester is changing the count to: #{m_num}"
       unless m_num.nil? or m_num.length == 0
@@ -61,7 +58,7 @@ class Jester
         end
       end
     else
-      puts "someone else is calling this: #{@chatter_name}"
+      puts "someone else is calling this: #{@chatter}"
     end
     lives = cached["lives"]
     output << "jester saved #{lives} lives. Klappa"

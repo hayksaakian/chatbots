@@ -148,8 +148,8 @@ EM.run {
         if !baderror and !MODERATION.ignored?(chatter_name) and !p_message.nil? and p_message.is_a?(String)
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
-              if chatbot.respond_to?(:set_chatter) 
-                chatbot.set_chatter(chatter_name)
+              if chatbot.respond_to?(:chatter=) 
+                chatbot.chatter = chatter_name
                 puts "set chatter name to #{chatter_name}"
               end
               cmd = p_message.split(' ').first

@@ -13,7 +13,7 @@ class Reddit
   REDDIT_USER = 'NeoDestiny'
   COMMENT_LENGTH = 256
 
-  attr_accessor :regex, :last_message
+  attr_accessor :regex, :last_message, :chatter
 
   def initialize
     #Login not required for this
@@ -21,10 +21,6 @@ class Reddit
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @cached = {}
     @last_message = ""
-  end
-
-  def set_chatter(name)
-    @chatter = name
   end
 
   def check(query)
