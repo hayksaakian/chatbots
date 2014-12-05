@@ -11,7 +11,7 @@ include ActionView::Helpers::DateHelper
 class CsgoStats
   ENDPOINT = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/?ajax&uptodate"
   HUMAN_LINK = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/"
-  VALID_WORDS = %w{cs csgo counterstrike ayyylmao}
+  VALID_WORDS = %w{cs csgo counterstrike ayyylmao sotriggered}
   RATE_LIMIT = 16 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
