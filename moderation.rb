@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class Moderation
   VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist status_api}
-  MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
+  MODS = %w{iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
