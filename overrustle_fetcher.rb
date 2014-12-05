@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
   ENDPOINT = "http://api.overrustle.com/api"
-  VALID_WORDS = %w{strim strims overrustle OverRustle status_api enable_strims disable_strims}
+  VALID_WORDS = %w{strim strims overrustle OverRustle enable_strims disable_strims}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet righttobeararmslol}.map{|m| m.downcase}
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
@@ -37,17 +37,7 @@ class OverrustleFetcher
   def trycheck(query)
     saved_filter = getcached("chat_filter") || []
     if MODS.include?(@chatter.downcase) 
-      if query =~ /^(!status_api)/i
-        start_time = Time.now
-        resp = open(ENDPOINT)
-        content = resp.read
-        request_duration = Time.now - start_time
-        request_duration = (request_duration.round(3)*1000).round
-        jsn = JSON.parse(content)
-        output = "api.overrustle.com Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration "
-        output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
-        return output
-      elsif query =~ /^(!(enable_strims|disable_strims))/i
+      if query =~ /^(!(enable_strims|disable_strims))/i
         self.strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
         word = self.strims_enabled ? 'enabled' : 'disabled'
         # true if it's !enable, false otherwise

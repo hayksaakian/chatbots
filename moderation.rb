@@ -9,7 +9,7 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class Moderation
-  VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist}
+  VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist status_api}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
@@ -44,7 +44,17 @@ class Moderation
   def trycheck(query)
     if MODS.include?(@chatter.downcase)
       parts = query.split(' ')
-      if query =~ /^(!blacklist_nospace)/i
+      if query =~ /^(!status_api)/i
+        start_time = Time.now
+        resp = open("http://api.overrustle.com/api")
+        content = resp.read
+        request_duration = Time.now - start_time
+        request_duration = (request_duration.round(3)*1000).round
+        jsn = JSON.parse(content)
+        output = "api.overrustle.com Status: #{jsn['viewercount']} viewers, #{jsn['idlecount']} idlers, #{jsn['connections']} connections, #{resp.meta['age']} cache age, #{request_duration}ms request duration "
+        output << %w{DANKMEMES SoDoge Klappa MLADY WORTH DappaKappa}.sample
+        return output
+      elsif query =~ /^(!blacklist_nospace)/i
         saved_filter = self.chat_filter || []
         if parts.length < 3
           return "#{@chatter} didn\'t format the blacklist command correctly"
@@ -74,6 +84,29 @@ class Moderation
           saved_list.delete(parts[1])
           self.baddies = saved_list
           return "/me stopped ignoring #{parts[1]} according to #{@chatter}"
+        end
+      elsif query =~ /^(!(enable|disable))/i
+        saved_list = CHATBOTS || []
+        if parts.length < 2
+          return "#{@chatter} didn\'t format the enable or disable command correctly"
+        end
+        bot_name = parts[1]
+        if query =~ /^(!disable)/i
+          todelete = nil
+          # todo: could be .select
+          bot = CHATBOTS.delete_if{|cb| (cb.class.name.underscore == bot_name or cb.class.name == bot_name)}
+          CHATBOTS.delete(todelete)
+          # todo: persist
+          return "#{@chatter} disabled #{bot}"
+        else
+          path = "./#{bot_name.underscore}.rb"
+          if File.exists?(path)
+            require path 
+            CHATBOTS << Object.const_get(bot_name.camelize).new
+            return "#{@chatter} enabled #{bot}"
+          else
+            return "/me could not find a chat bot at #{path}"
+          end
         end
       end
     end

@@ -1,3 +1,4 @@
+#!/usr/bin/ruby
 Encoding.default_external = "utf-8"
 require 'rubygems'
 require 'faye/websocket'
