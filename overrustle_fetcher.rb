@@ -36,12 +36,22 @@ class OverrustleFetcher
   end
   def trycheck(query)
     saved_filter = getcached("chat_filter") || []
-    if MODS.include?(@chatter.downcase) 
-      if query =~ /^(!(enable_strims|disable_strims))/i
-        self.strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
-        word = self.strims_enabled ? 'enabled' : 'disabled'
-        # true if it's !enable, false otherwise
-        return "!strims #{word} by #{@chatter}"
+    # if MODS.include?(@chatter.downcase) 
+    #   if query =~ /^(!(enable_strims|disable_strims))/i
+    #     self.strims_enabled = !(query =~ /^(!enable_strims)/i).nil?
+    #     word = self.strims_enabled ? 'enabled' : 'disabled'
+    #     # true if it's !enable, false otherwise
+    #     return "!strims #{word} by #{@chatter}"
+    #   end
+    # end
+
+    apid = getjson("https://api.twitch.tv/kraken/streams/destiny")
+    if !apid.nil? and apid.has_key?('stream')
+      if !apid['stream'].nil? and self.strims_enabled == true
+        self.strims_enabled = false
+        return "Destiny is live at destiny.gg/bigscreen playing #{apid['stream']['game']} for #{apid['stream']['viewers'].to_s}, !strims is disabled until Destiny goes offline"
+      elsif apid['stream'].nil? and self.strims_enabled == false
+        self.strims_enabled = true
       end
     end
 

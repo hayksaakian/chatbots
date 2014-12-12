@@ -11,7 +11,7 @@ Dotenv.load
 puts "ARGS: #{ARGV.map{|a| a.to_s}.join(', ')}"
 
 DESTINYGG_API_KEY = (ARGV.length > 0 and !ARGV[0].nil? and ARGV[0].length > 0) ? ARGV[0] : ENV['DESTINYGG_API_KEY']
-WS_ENDPOINT = (ARGV.length > 1 and !ARGV[1].nil? and ARGV[1].length > 0) ? "ws://#{ARGV[1]}:9998/ws" : ENV.fetch('DESTINYGG_WS_ENDPOINT', 'ws://www.destiny.gg:9998/ws')
+WS_ENDPOINT = (ARGV.length > 1 and !ARGV[1].nil? and ARGV[1].length > 0) ? "ws://#{ARGV[1]}/ws" : ENV.fetch('DESTINYGG_WS_ENDPOINT', 'ws://www.destiny.gg:9998/ws')
 
 # require_relative 'roulette'
 # chatbot = Roulette.new
