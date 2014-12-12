@@ -38,9 +38,10 @@ class Broadcaster
       "Donate for Destiny\'s birthday Roof: #{ENDPOINT}",
       "Donation Link: #{ENDPOINT}"
     ]
-    @last_one = @last_one + 1
     @last_one = 0 if @last_one >= phrases.length
-    return phrases[@last_one]
+    phrase = phrases[@last_one]
+    @last_one = @last_one + 1
+    return phrase
   end
   def trycheck(query)
     puts Time.now - @last_time
