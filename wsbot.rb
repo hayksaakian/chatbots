@@ -26,6 +26,7 @@ CLASSES = %w{
   moobie 
   reddit 
   cat_facts 
+  evaluator
 }
 
 CLASSES.each do |c|
