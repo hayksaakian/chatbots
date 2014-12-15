@@ -50,10 +50,11 @@ class Fortune
     parts = query.split(' ')
     parts.delete_at(0)
     question = parts.join(' ')
-    questions = getcached('questions') or {}
+    questions = getcached('questions') 
+    questions ||= {}
     questions.keys.each do |q|
-      if q.to_s.similar(questions) > 95
-        return questions[q]
+      if q.to_s.similar(question) > 95
+        return "#{@chatter} #{questions[q]}"
       end
     end
     questions[question] = ANSWERS.sample
