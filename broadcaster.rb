@@ -16,6 +16,7 @@ class Broadcaster
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
   COOLDOWN = 20
+  MINIMUM = 5
 
   attr_accessor :regex, :last_message, :chatter
   def initialize
@@ -34,10 +35,10 @@ class Broadcaster
   end
   def pickone
     phrases = [
-      "#{ENDPOINT} Buy Destiny a new ROOF!! 5$ to get your Message read by Robot Lady",
-      "Donate for Destiny\'s birthday Roof: #{ENDPOINT}  Robot Lady will read messages on donations over than 5$",
-      "Min. 5$ donation for Robot Lady to read it! Donation Link: #{ENDPOINT}",
-      "Robot Lady will read your message for at least 5$ donations. Donate Here for Destiny\'s roof: #{ENDPOINT}"
+      "#{ENDPOINT} Buy Destiny a new ROOF!! $#{MINIMUM.to_s} to get your Message read by Robot Lady",
+      "Donate for Destiny\'s birthday Roof: #{ENDPOINT}  Robot Lady will read messages on donations over than #{MINIMUM.to_s} dollars",
+      "Min. $#{MINIMUM.to_s} donation for Robot Lady to read it! Donation Link: #{ENDPOINT}",
+      "Robot Lady will read your message for at least $#{MINIMUM.to_s} donations. Donate Here for Destiny\'s roof: #{ENDPOINT}"
     ]
     @last_one = 0 if @last_one >= phrases.length
     phrase = phrases[@last_one]

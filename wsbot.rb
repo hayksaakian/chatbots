@@ -26,7 +26,6 @@ CLASSES = %w{
   moobie 
   reddit 
   cat_facts 
-  broadcaster
 }
 
 CLASSES.each do |c|
