@@ -93,7 +93,7 @@ end
 
 class Chance
   ENDPOINT = "http://us.battle.net/api/sc2/profile/310150/1/Destiny/matches"
-  VALID_WORDS = %w{bet purse}
+  VALID_WORDS = %w{hit stand bet purse}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
@@ -155,6 +155,8 @@ class Chance
       else
         return "You must provide an amount to bet"
       end
+    elsif query =~ /^!purse/
+      return "You have Ð#{game['purse']} chips in your purse"
     elsif query =~ /^!claim/
       # TODO let users get free chips every day
     end
