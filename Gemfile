@@ -15,3 +15,5 @@ gem 'redditkit', '~> 1.0.2'
 gem 'actionview'
 gem 'youtube_search'
 gem 'blackjack1'
+
+gem 'jsonable'

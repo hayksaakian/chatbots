@@ -37,6 +37,7 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.6.11)
     json (1.8.1)
+    jsonable (0.0.3)
     mechanize (2.7.3)
       domain_name (~> 0.5, >= 0.5.1)
       http-cookie (~> 1.0)
@@ -85,6 +86,7 @@ DEPENDENCIES
   cleverbot
   dotenv
   faye-websocket
+  jsonable
   mechanize
   nokogiri (= 1.6.0)
   redditkit (~> 1.0.2)

@@ -1,13 +1,95 @@
 require 'rubygems'
 require 'net/http'
 require 'open-uri'
-require 'json'
 require 'cgi'
 require 'digest'
 require 'action_view'
 require 'similar_text'
 require 'blackjack1'
 include ActionView::Helpers::DateHelper
+
+require 'json'
+class Hand 
+  # The player
+  attr_accessor :cards # The cards in the hand
+  def self.deck=(deck)
+    @deck = deck.cards.shuffle
+  end 
+  # Set which deck the game is using. Also shuffles the deck.
+  def self.deck
+    @deck
+  end 
+  # The deck the game is using
+  def bust?; value > 21; end # Returns true if the value is greater than 21.
+  def blackjack?; value == 21 && @cards.length == 2; end # Returns true if you have blackjack.
+  def initialize(deck, cards=nil)
+    @deck = deck
+    @cards = (cards.nil? and !@deck.nil?) ? [@deck.shift, @deck.shift] : cards
+  end
+  def view
+    @cards.each {|card| "#{card.abbr}\t"}
+  end 
+  # The view of the cards
+  def hit
+    @cards.push @deck.shift
+  end 
+  # Add a card to @cards from @deck
+  def value 
+    # The value of the cards in @cards
+    v, aces = 0, 0
+    @cards.each do |card|
+      v += card.value
+      aces += 1 if card.num == "Ace"
+    end
+    while v > 21 && aces > 0
+      v -= 10
+      aces -= 1
+    end
+    return v
+  end
+  def to_json(args={})
+    self.cards.map do |c| 
+      {
+        "num" => c.num,
+        "suit" => c.suit
+      }  
+    end.to_json(args)
+  end
+  def self.from_json(string, deck=nil)
+    jh = JSON.parse(string)
+    cds = jh.map do |c|
+      CardDeck::Card.new c["num"], c["suit"]
+    end
+    return Hand.new(deck, cds)
+  end
+end
+
+class Deck < CardDeck::Deck
+  def initialize(args={jokers: false})
+    return super(args) unless args[:raw_deck]
+  end
+  def to_json(args={})
+    return self.cards.map do |c|
+      {
+        "num" => c.num,
+        "suit" => c.suit
+      }
+    end.to_json(args)
+  end
+  def self.from_json(string)
+    n_deck = Deck.new
+    s_deck = JSON.parse(string)
+    n_deck.cards = s_deck.map{|c| CardDeck::Card.new c["num"], c["suit"]}
+    return n_deck
+  end
+  def stock(num, suit)
+    @cards.push CardDeck::Card.new num, suit
+  end 
+  def shift
+    @cards.shift
+  end
+  # Creates a Card to add to Deck#cards
+end
 
 class Chance
   ENDPOINT = "http://us.battle.net/api/sc2/profile/310150/1/Destiny/matches"
@@ -24,8 +106,13 @@ class Chance
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @games = {}
-    @deck = CardDeck::Deck.new
-    Hand.deck = @deck
+    # load games
+    gms = getcached('chance_games') 
+    gms ||= []
+    gms.each do |player, gm|
+      # unserialize everything correctly
+      @games[player] = hash_to_game(gm)
+    end
     @last_message = ""
     @chatter = ""
   end
@@ -49,36 +136,84 @@ class Chance
         return "!strims #{word} by #{@chatter}"
       end
     end
-    if query =~ /^!hit/
-      hit
+    if game.nil?
+      save(new_game)
+      game['purse'] = STARTCASH
     end
+
+    save(new_game(game)) if game['done']
+
+    if query =~ /^!hit/
+      bet if game['bet'] == 0
+      return hit
+    elsif query =~ /^!stand/
+      return stand
+    elsif query =~ /^!bet/
+      parts = query.split(' ')
+      if(parts.length > 1)
+        return bet(parts[1].to_i)
+      else
+        return "You must provide an amount to bet"
+      end
+    elsif query =~ /^!claim/
+      # TODO let users get free chips every day
+    end
+    save
     return nil
   end
-  def game
-    return @games[@chatter]
+  def json_obj_to_game(gm)
+    gm['deck'] = Deck.from_json(gm['deck']) if gm['deck'].is_a?(String)
+    gm['player'] = Hand.from_json(gm['player'], gm['deck']) if gm['player'].is_a?(String)
+    gm['dealer'] = Hand.from_json(gm['dealer'], gm['deck']) if gm['dealer'].is_a?(String)
+    return gm
   end
-  def draw
-    if game['bet'] < MINBLIND
-      if game['purse'] >= MINBLIND
-        game['purse'] -= MINBLIND
-        game['bet'] += MINBLIND
-      else
-        return "#{@chatter} can't afford the minimum bet with a Ð#{game['purse']} purse, try again tomorrow."
-      end
+  def game_to_jsn_string(gm)
+    ['deck', 'player', 'hand'].each do |k|
+      gm[k] = gm[k].to_json unless gm[k].is_a?(String)
     end
-    game['deck'] = CardDeck::Deck.new
-    Hand.deck = 
-    game['player'] = Hand.new
-    game['dealer'] = Hand.new
+    return gm
   end
+  def save(thing=nil)
+    self.game = thing.nil? ? game : thing
+  end
+  def game=(gm)
+    setcached("game.#{@chatter.downcase}", game_to_jsn_string(gm))
+  end
+  def game
+    gm = getcached("game.#{@chatter.downcase}")
+    return gm.nil? ? nil : json_obj_to_game(gm)
+  end
+  def new_game(gm={})
+    gm['deck'] = Deck.new
+    gm['deck'].cards.shuffle!
+    gm['player'] = Hand.new(gm['deck'])
+    gm['dealer'] = Hand.new(gm['deck'])
+    gm['bet'] = 0
+    gm['done'] = false
+    return gm
+  end
+  def bet(amount=0)
+    if amount < 0
+      return "#{@chatter} cannot bet negative values"
+    end
+    amount = MINBLIND if amount < MINBLIND
+    if amount > game['purse']
+      return "#{@chatter} cannot afford to bet #{amount} with a Ð#{game['purse']} purse (minimum is #{MINBLIND}), try again tomorrow if you can afford the minimum."
+    end
+    game['bet'] += amount
+    game['purse'] -= amount
+  end
+
   def hit
-    h = game['player']
-    h.hit
-    if h.bust?
+    return "Not enough bet to hit, need to bet at least #{MINBLIND}" if game['bet'] < MINBLIND
+    game['player'].hit
+    if game['player'].bust?
+      game['done'] = true
       return "#{@chatter} busted! #{show}"
     else
       return "#{@chatter} hit. #{show}"
     end
+    # TODO: would the dealer draw right now?
   end
   
   def stand
@@ -91,11 +226,14 @@ class Chance
     if h.value > d.value
       # player wins
       op = "#{@chatter} wins Abathur"
+      game['purse'] += (game['bet']*2)
     elsif h.value < d.value
       op = "#{@chatter} loses GameOfThrows"
     else
       op = "No one wins SoSad"
+      game['purse'] += game['bet']
     end
+    game['done'] = true
     return "#{op} #{show}"
   end
 
@@ -144,4 +282,6 @@ class Chance
   def hashed(url)
     return Digest::MD5.hexdigest(url).to_s
   end
+
+
 end
