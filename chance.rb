@@ -6,6 +6,7 @@ require 'cgi'
 require 'digest'
 require 'action_view'
 require 'similar_text'
+require 'blackjack1'
 include ActionView::Helpers::DateHelper
 
 class Chance
@@ -16,10 +17,15 @@ class Chance
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
+  STARTCASH = 100
+  MINBLIND = 5
 
   attr_accessor :regex, :last_message, :chatter
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
+    @games = {}
+    @deck = CardDeck::Deck.new
+    Hand.deck = @deck
     @last_message = ""
     @chatter = ""
   end
@@ -43,7 +49,61 @@ class Chance
         return "!strims #{word} by #{@chatter}"
       end
     end
-    return output
+    if query =~ /^!hit/
+      hit
+    end
+    return nil
+  end
+  def game
+    return @games[@chatter]
+  end
+  def draw
+    if game['bet'] < MINBLIND
+      if game['purse'] >= MINBLIND
+        game['purse'] -= MINBLIND
+        game['bet'] += MINBLIND
+      else
+        return "#{@chatter} can't afford the minimum bet with a Ð#{game['purse']} purse, try again tomorrow."
+      end
+    end
+    game['deck'] = CardDeck::Deck.new
+    Hand.deck = 
+    game['player'] = Hand.new
+    game['dealer'] = Hand.new
+  end
+  def hit
+    h = game['player']
+    h.hit
+    if h.bust?
+      return "#{@chatter} busted! #{show}"
+    else
+      return "#{@chatter} hit. #{show}"
+    end
+  end
+  
+  def stand
+    # dealer draws until he wins or flops
+    h = game['player']
+    d = game['dealer']
+    while d.value < 17 do
+      d.hit      
+    end
+    if h.value > d.value
+      # player wins
+      op = "#{@chatter} wins Abathur"
+    elsif h.value < d.value
+      op = "#{@chatter} loses GameOfThrows"
+    else
+      op = "No one wins SoSad"
+    end
+    return "#{op} #{show}"
+  end
+
+  def show(gm=nil)
+    gm = game if gm.nil?
+    h = gm['player']
+    dh = gm['dealer']
+    return "#{h.value.to_s} #{h.view.to_s}. Dealer has: #{dh.value.to_s} #{dh.view.to_s}."
   end
 
   def getjson(url)

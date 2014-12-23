@@ -11,7 +11,10 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    blackjack1 (2.1.0)
+      card_deck (~> 3.0)
     builder (3.2.2)
+    card_deck (3.0.1)
     cinch (2.1.0)
     cleverbot (0.2.0)
       httparty (>= 0.8.1, < 1.0)
@@ -77,6 +80,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionview
+  blackjack1
   cinch
   cleverbot
   dotenv
