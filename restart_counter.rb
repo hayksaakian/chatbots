@@ -9,7 +9,9 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class RestartCounter
-  MODS = %w{waterlord0 iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
+  MODS = %w{
+    waterlord0 kittybomber savage_swiftrage
+    iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   ENDPOINT = "restart_counter"
   VALID_WORDS = %w{restart counter reset}
   RATE_LIMIT = 32 # seconds
@@ -47,7 +49,7 @@ class RestartCounter
     end
     # if jester is setting the number
     parts = query.split(' ')
-    if MODS.include?(@chatter) and parts.length > 1
+    if MODS.include?(@chatter.downcase) and parts.length > 1
       m_num = parts[1]
       puts "#{@chatter} is changing the count to: #{m_num}"
       unless m_num.nil? or m_num.length == 0
