@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class RandomCat
   EMOTES = %w{MotherFuckinGame KINGSLY CallCatz}
-  ENDPOINT = "https://api.imgur.com/2/album/icYXp/images.json"
+  ENDPOINT = "https://api.imgur.com/2/album/W8TvQ/images.json"
   VALID_WORDS = %w{randomcat randomkingsly KINGSLY MotherFuckinGame CallCatz}
   CACHE_DURATION = 60*3 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
@@ -31,7 +31,8 @@ class RandomCat
     " MotherFuckinGame tell hephaestus something broke with Random Cat. Exception: #{m.to_s}"
   end
   def trycheck(query)
-    cached = getcached(ENDPOINT) || {}
+    cached = getcached(ENDPOINT) 
+    cached ||= {}
     cached["date"] ||= 0
     # expire cache if...
     if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
@@ -45,7 +46,7 @@ class RandomCat
     else
       jsn = cached
     end
-    return "#{EMOTES.sample} imgur.com/" + cached['images'].sample['hash']
+    return "#{EMOTES.sample} imgur.com/" + cached['album']['images'].sample['image']['hash']
   end
 
   def getjson(url)
