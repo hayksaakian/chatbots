@@ -11,7 +11,7 @@ include ActionView::Helpers::DateHelper
 class RestartCounter
   MODS = %w{iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   ENDPOINT = "restart_counter"
-  VALID_WORDS = %w{restart counter}
+  VALID_WORDS = %w{restart counter reset}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
