@@ -27,6 +27,7 @@ CLASSES = %w{
   reddit 
   cat_facts 
   evaluator
+  fortune
 }
 
 CLASSES.each do |c|
