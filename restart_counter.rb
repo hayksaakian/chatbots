@@ -9,7 +9,7 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class RestartCounter
-  MODS = %w{iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
+  MODS = %w{waterlord0 iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   ENDPOINT = "restart_counter"
   VALID_WORDS = %w{restart counter reset}
   RATE_LIMIT = 32 # seconds
