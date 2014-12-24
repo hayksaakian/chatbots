@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class CatApi
   ENDPOINT = "http://thecatapi.com/api/images/get"
-  VALID_WORDS = %w{randomcat randomkingsly KINGSLY MotherFuckinGame CallCatz}
+  VALID_WORDS = %w{randomcat}
 
   attr_accessor :regex, :last_message
   def initialize
