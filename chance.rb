@@ -197,6 +197,8 @@ class Chance
       return "#{@chatter} cannot bet negative values"
     end
     amount = MINBLIND if amount < MINBLIND
+    puts 'debugging bet game'
+    puts game
     if amount > game['purse']
       return "#{@chatter} cannot afford to bet Ð#{amount} with a Ð#{game['purse']} purse (minimum is Ð#{MINBLIND}), try again tomorrow if you can afford the minimum."
     end
