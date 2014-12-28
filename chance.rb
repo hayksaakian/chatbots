@@ -132,8 +132,9 @@ class Chance
     if game.nil? or game['done']
       isnewgame = true
       save(new_game(game))
-      game['purse'] ||= STARTCASH
     end
+    # handle corner cases. notears
+    game['purse'] ||= STARTCASH
     if query =~ /^!(hit|draw|bj)/ 
       bet if game['bet'] == 0
       if isnewgame
