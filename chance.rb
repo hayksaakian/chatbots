@@ -105,14 +105,6 @@ class Chance
   attr_accessor :regex, :last_message, :chatter
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
-    @games = {}
-    # load games
-    gms = getcached('chance_games') 
-    gms ||= []
-    gms.each do |player, gm|
-      # unserialize everything correctly
-      @games[player] = hash_to_game(gm)
-    end
     @last_message = ""
     @chatter = ""
   end
@@ -136,16 +128,19 @@ class Chance
         return "!strims #{word} by #{@chatter}"
       end
     end
-    if game.nil?
-      save(new_game)
-      game['purse'] = STARTCASH
+    isnewgame = false
+    if game.nil? or game['done']
+      isnewgame = true
+      save(new_game(game))
+      game['purse'] ||= STARTCASH
     end
-
-    save(new_game(game)) if game['done']
-
-    if query =~ /^!hit/
+    if query =~ /^!(hit|draw|bj)/ 
       bet if game['bet'] == 0
-      return hit
+      if isnewgame
+        return "#{@chatter} New Round: #{show}"
+      else
+        return hit
+      end
     elsif query =~ /^!stand/
       return stand
     elsif query =~ /^!bet/
@@ -170,7 +165,7 @@ class Chance
     return gm
   end
   def game_to_jsn_string(gm)
-    ['deck', 'player', 'hand'].each do |k|
+    ['deck', 'player', 'dealer'].each do |k|
       gm[k] = gm[k].to_json unless gm[k].is_a?(String)
     end
     return gm
@@ -186,10 +181,13 @@ class Chance
     return gm.nil? ? nil : json_obj_to_game(gm)
   end
   def new_game(gm={})
+    gm = {} if gm.nil?
     gm['deck'] = Deck.new
     gm['deck'].cards.shuffle!
     gm['player'] = Hand.new(gm['deck'])
     gm['dealer'] = Hand.new(gm['deck'])
+    # testlog(gm)
+
     gm['bet'] = 0
     gm['done'] = false
     return gm
@@ -200,21 +198,25 @@ class Chance
     end
     amount = MINBLIND if amount < MINBLIND
     if amount > game['purse']
-      return "#{@chatter} cannot afford to bet #{amount} with a Ð#{game['purse']} purse (minimum is #{MINBLIND}), try again tomorrow if you can afford the minimum."
+      return "#{@chatter} cannot afford to bet Ð#{amount} with a Ð#{game['purse']} purse (minimum is Ð#{MINBLIND}), try again tomorrow if you can afford the minimum."
     end
     game['bet'] += amount
     game['purse'] -= amount
+    return "#{@chatter} bet Ð#{amount} chips on #{show}"
   end
 
   def hit
-    return "Not enough bet to hit, need to bet at least #{MINBLIND}" if game['bet'] < MINBLIND
+    return "Not enough bet to hit, need to bet at least Ð#{MINBLIND}" if game['bet'] < MINBLIND
     game['player'].hit
+    rv = ""
     if game['player'].bust?
       game['done'] = true
-      return "#{@chatter} busted! #{show}"
+      rv << "#{@chatter} busted! #{show}. "
     else
-      return "#{@chatter} hit. #{show}"
+      rv << "#{@chatter} hit #{show}. "
     end
+    rv << "Ð#{game['purse']} left"
+    return rv
     # TODO: would the dealer draw right now?
   end
   
@@ -222,6 +224,8 @@ class Chance
     # dealer draws until he wins or flops
     h = game['player']
     d = game['dealer']
+    # testlog(game)
+
     while d.value < 17 do
       d.hit      
     end
@@ -236,14 +240,21 @@ class Chance
       game['purse'] += game['bet']
     end
     game['done'] = true
-    return "#{op} #{show}"
+    return "#{op} #{show} Ð#{game['purse']} left"
   end
 
   def show(gm=nil)
     gm = game if gm.nil?
     h = gm['player']
-    dh = gm['dealer']
-    return "#{h.value.to_s} #{h.view.to_s}. Dealer has: #{dh.value.to_s} #{dh.view.to_s}."
+    d = gm['dealer']
+    # testlog(gm)
+
+    rv = "#{h.value.to_s} "
+    rv << "#{h.view.to_s}. "
+    rv << "Dealer has: "
+    rv << "#{d.value.to_s} "
+    rv << " #{d.view.to_s}."
+    return rv
   end
 
   def getjson(url)
@@ -285,5 +296,10 @@ class Chance
     return Digest::MD5.hexdigest(url).to_s
   end
 
-
+  def testlog(g)
+    puts "Dealer is... "
+    puts g['dealer'].respond_to?(:value)
+    puts "Player is... "
+    puts g['player'].respond_to?(:value)
+  end
 end
