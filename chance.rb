@@ -141,7 +141,7 @@ class Chance
       else
         return hit
       end
-    elsif query =~ /^!stand/
+    elsif query =~ /^!sta/
       return stand
     elsif query =~ /^!bet/
       parts = query.split(' ')
