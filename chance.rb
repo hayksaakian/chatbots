@@ -153,6 +153,8 @@ class Chance
       end
     elsif query =~ /^!purse/
       return "You have Ð#{game['purse']} chips in your purse"
+    elsif query =~ /^!show/
+      return "#{@chatter} is playing with #{show}"
     elsif query =~ /^!claim/
       # TODO let users get free chips every day
     end
