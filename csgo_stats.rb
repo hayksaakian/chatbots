@@ -62,11 +62,14 @@ class CsgoStats
     if lmtxt.include?('.')
       lmtxt = lmtxt.split('.')[0]
     end
+    lmparts = lmtxt.split('/')
+    wins = lmparts[0].to_i
+    losses = lmparts[1].split(' ')[0].to_i
     # contains lifetime stats
     misc_data = parsed_html.css('#misc').children[3].children[3]
     # matches won / played
     overall = "#{misc_data.children[15].text.chomp} / #{misc_data.children[11].text.chomp}"
-    return "Destiny #{result} a game with #{lmtxt} (#{overall} games won overall) #{HUMAN_LINK}"
+    return "Destiny #{result} a game #{wins}-#{losses} (#{lmtxt} rounds) (#{overall} games won overall) #{HUMAN_LINK}"
     # output << " as of "
     # output << time_ago_in_words(Time.at(jsn["date"]))
     # output << " ago"
