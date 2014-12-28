@@ -64,7 +64,7 @@ class CsgoStats
     end
     lmparts = lmtxt.split('/')
     wins = lmparts[0].to_i
-    losses = lmparts[1].split(' ')[0].to_i
+    losses = lmparts[1].split(' ')[0].to_i - wins
     # contains lifetime stats
     misc_data = parsed_html.css('#misc').children[3].children[3]
     # matches won / played
