@@ -33,11 +33,11 @@ class CsgoStats
   def check(query)
     return trycheck(query)
   rescue Exception => e
-    puts e.message
     m = e.message
     m << "\n\n --->"
     m << e.backtrace.join("\n|\n")
-    " AYYYLMAO tell hephaestus something broke. Exception: #{m.to_s}"
+    puts m
+    " AYYYLMAO tell hephaestus something broke. Exception: #{e.message.to_s}"
   end
   def trycheck(query)
     cached = getcached(ENDPOINT) || {}
