@@ -98,7 +98,7 @@ class Chance
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
-  CACHE_FILE = APP_ROOT+"/cache/"
+  CACHE_FILE = APP_ROOT+"/cache/chance/"
   STARTCASH = 100
   MINBLIND = 5
 
