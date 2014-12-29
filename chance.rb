@@ -101,6 +101,7 @@ class Chance
   CACHE_FILE = APP_ROOT+"/cache/chance/"
   STARTCASH = 100
   MINBLIND = 5
+  WHISPER_SUFFIX = " Please click \'Mark as Read\' so that I can continue to send messages."
 
   attr_accessor :regex, :last_message, :chatter
   def initialize
@@ -138,7 +139,7 @@ class Chance
     if query =~ /^!(hit|draw|bj)/ 
       bet if game['bet'] == 0
       if isnewgame
-        return "/w #{@chatter} New Round: #{show}"
+        return "/w #{@chatter} New Round: #{show} #{WHISPER_SUFFIX}"
       else
         return hit
       end
@@ -152,7 +153,7 @@ class Chance
         return "You must provide an amount to bet"
       end
     elsif query =~ /^!purse/
-      return "/w #{@chatter} have Ð#{game['purse']} chips in your purse"
+      return "/w #{@chatter} Ð#{game['purse']} chips in your purse #{WHISPER_SUFFIX}"
     elsif query =~ /^!show/
       return "#{@chatter} is playing with #{show} Ð#{game['purse']} chips in purse"
     elsif query =~ /^!claim/
@@ -197,28 +198,28 @@ class Chance
   end
   def bet(amount=0)
     if amount < 0
-      return "/w #{@chatter} cannot bet negative values"
+      return "/w #{@chatter} cannot bet negative values #{WHISPER_SUFFIX}"
     end
     amount = MINBLIND if amount < MINBLIND
     puts 'debugging bet game'
     puts game
     if amount > game['purse']
-      return "/w #{@chatter} cannot afford to bet Ð#{amount} with a Ð#{game['purse']} purse (minimum is Ð#{MINBLIND}), try again tomorrow if you can afford the minimum."
+      return "/w #{@chatter} cannot afford to bet Ð#{amount} with a Ð#{game['purse']} purse (minimum is Ð#{MINBLIND}), try again tomorrow if you can afford the minimum. #{WHISPER_SUFFIX}"
     end
     game['bet'] += amount
     game['purse'] -= amount
-    return "/w #{@chatter} bet Ð#{amount} chips on #{show}"
+    return "/w #{@chatter} bet Ð#{amount} chips on #{show} #{WHISPER_SUFFIX}"
   end
 
   def hit
-    return "/w #{@chatter} Not enough bet to hit, need to bet at least Ð#{MINBLIND}" if game['bet'] < MINBLIND
+    return "/w #{@chatter} Not enough bet to hit, need to bet at least Ð#{MINBLIND} #{WHISPER_SUFFIX}" if game['bet'] < MINBLIND
     game['player'].hit
     rv = ""
     if game['player'].bust?
       game['done'] = true
       rv << "#{@chatter} busted! #{show}. "
     else
-      rv << "/w #{@chatter} You hit #{show}. "
+      rv << "/w #{@chatter} You hit #{show}. #{WHISPER_SUFFIX}"
     end
     rv << "Ð#{game['purse']} left"
     return rv

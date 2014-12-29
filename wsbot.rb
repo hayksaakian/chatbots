@@ -122,7 +122,6 @@ EM.run {
 
     ws.on :open do |event|
       p [:open]
-      puts event.methods
       GLOBALS['reconnects'] = 0
     end
 
@@ -133,7 +132,7 @@ EM.run {
         p [:error, event.to_s]
       elsif event.data.match /^PING/
         ws.send("PONG "+event.data[5..event.data.length])
-      elsif event.data.match /^(ERR|MSG|PRIVMSG)/
+      elsif event.data.match /^(ERR|MSG|(PRIVMSG\b))/
         suffix = ""
         p_message = ""
         baderror = false
