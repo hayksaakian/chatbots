@@ -242,7 +242,7 @@ class Chance
     elsif h.value < d.value
       op = "#{@chatter} loses GameOfThrows"
     else
-      op = "No one wins SoSad"
+      op = "No one wins SoSad #{@chatter} gets a refund "
       game['purse'] += game['bet']
     end
     game['done'] = true
