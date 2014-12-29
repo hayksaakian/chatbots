@@ -138,7 +138,7 @@ class Chance
     if query =~ /^!(hit|draw|bj)/ 
       bet if game['bet'] == 0
       if isnewgame
-        return "#{@chatter} New Round: #{show}"
+        return "/w #{@chatter} New Round: #{show}"
       else
         return hit
       end
@@ -152,9 +152,9 @@ class Chance
         return "You must provide an amount to bet"
       end
     elsif query =~ /^!purse/
-      return "You have Ð#{game['purse']} chips in your purse"
+      return "/w #{@chatter} have Ð#{game['purse']} chips in your purse"
     elsif query =~ /^!show/
-      return "#{@chatter} is playing with #{show}"
+      return "#{@chatter} is playing with #{show} Ð#{game['purse']} chips in purse"
     elsif query =~ /^!claim/
       # TODO let users get free chips every day
     end
@@ -197,28 +197,28 @@ class Chance
   end
   def bet(amount=0)
     if amount < 0
-      return "#{@chatter} cannot bet negative values"
+      return "/w #{@chatter} cannot bet negative values"
     end
     amount = MINBLIND if amount < MINBLIND
     puts 'debugging bet game'
     puts game
     if amount > game['purse']
-      return "#{@chatter} cannot afford to bet Ð#{amount} with a Ð#{game['purse']} purse (minimum is Ð#{MINBLIND}), try again tomorrow if you can afford the minimum."
+      return "/w #{@chatter} cannot afford to bet Ð#{amount} with a Ð#{game['purse']} purse (minimum is Ð#{MINBLIND}), try again tomorrow if you can afford the minimum."
     end
     game['bet'] += amount
     game['purse'] -= amount
-    return "#{@chatter} bet Ð#{amount} chips on #{show}"
+    return "/w #{@chatter} bet Ð#{amount} chips on #{show}"
   end
 
   def hit
-    return "Not enough bet to hit, need to bet at least Ð#{MINBLIND}" if game['bet'] < MINBLIND
+    return "/w #{@chatter} Not enough bet to hit, need to bet at least Ð#{MINBLIND}" if game['bet'] < MINBLIND
     game['player'].hit
     rv = ""
     if game['player'].bust?
       game['done'] = true
       rv << "#{@chatter} busted! #{show}. "
     else
-      rv << "#{@chatter} hit #{show}. "
+      rv << "/w #{@chatter} You hit #{show}. "
     end
     rv << "Ð#{game['purse']} left"
     return rv

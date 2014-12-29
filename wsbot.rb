@@ -123,7 +123,7 @@ EM.run {
         p [:error, event.to_s]
       elsif event.data.match /^PING/
         ws.send("PONG "+event.data[5..event.data.length])
-      elsif event.data.match /^(ERR|MSG)/
+      elsif event.data.match /^(ERR|MSG|PRIVMSG)/
         suffix = ""
         p_message = ""
         baderror = false
@@ -166,8 +166,18 @@ EM.run {
                 parts = result.split("\n")
                 parts.delete_if{|pt| !MODERATION.safe?(pt)}
                 result = parts.join("\n")
-                jsn = {data: result}
-                ws.send("MSG "+jsn.to_json)
+                jsn = {}
+                if result =~ /^\/(w|n|notify|whisper|t)/ and result.split(' ').length > 2
+                  mparts = result.split(' ')
+                  jsn[:nick] = mparts[1]
+                  mparts.delete_at(0)
+                  mparts.delete_at(0)
+                  jsn[:data] = mparts.join(' ')
+                  ws.send("PRIVMSG "+jsn.to_json)
+                else
+                  jsn[:data] = result
+                  ws.send("MSG "+jsn.to_json)
+                end
                 p "<--- SENDING DATA !!! #{result}"
                 GLOBALS['last_caller'] = chatter_name
                 GLOBALS['last_message'] = result
