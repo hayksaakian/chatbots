@@ -3,6 +3,8 @@ Encoding.default_external = "utf-8"
 require 'rubygems'
 require 'faye/websocket'
 require 'json'
+require 'cgi'
+require 'net/http'
 require 'eventmachine'
 require 'dotenv'
 require 'similar_text'
@@ -60,6 +62,13 @@ def ready(command)
   return false
 end
 
+# constants for marking as read
+# this is a hack until there is a consistent way to produce
+# cookies with an sid value and a valid token
+DESTINY_COOKIE = ENV['RAW_DGG_COOKIE']
+# DESTINY_COOKIE = CGI::Cookie.new('authtoken', DESTINYGG_API_KEY.to_s)
+
+# constants for the websocket server
 OPTIONS = {headers:{
   "Cookie" => "authtoken=#{DESTINYGG_API_KEY};",
   "Origin" => "*"
@@ -113,6 +122,7 @@ EM.run {
 
     ws.on :open do |event|
       p [:open]
+      puts event.methods
       GLOBALS['reconnects'] = 0
     end
 
@@ -143,13 +153,25 @@ EM.run {
         else
           # removes their name from the message, i think?
           proper_message = event.data.split(" ")
-          proper_message.shift
+          proper_message.delete_at(0)
+
           proper_message = proper_message.join(" ")
           parsed_message = JSON.parse(proper_message)
           p_message = parsed_message["data"]
           chatter_name = parsed_message["nick"]
         end
         if !baderror and !MODERATION.ignored?(chatter_name) and !p_message.nil? and p_message.is_a?(String)
+          if parsed_message.has_key?('messageid')
+            # if we got a PM, mark as read!
+            read_endpoint = "http://www.destiny.gg/profile/messages/openall"
+            uri = URI(read_endpoint)
+            read_http = Net::HTTP.new(uri.host, uri.port)
+            read_req = Net::HTTP::Post.new(uri.request_uri)
+            read_req['Cookie'] = DESTINY_COOKIE.to_s
+            read_req['Origin'] = "http://www.destiny.gg"
+            response = read_http.request(read_req)
+            puts "Tried to Mark as Read. Response: #{response}"
+          end
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
               if chatbot.respond_to?(:chatter=) 
