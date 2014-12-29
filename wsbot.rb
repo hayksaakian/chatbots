@@ -30,7 +30,7 @@ CLASSES = %w{
   cat_facts 
   evaluator
   fortune
-  random_cat
+  chance
 }
 
 CLASSES.each do |c|
