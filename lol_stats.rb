@@ -69,7 +69,7 @@ class LolStats
     # Destiny lost a solo game on King Sejong Station LE 7h9m ago. sc2ranks.com/character/us/310150/Destiny
     out_parts = []
     out_parts << " #{summoner['name']} #{result} a game "
-    out_parts << " (#{summoner['CHAMPIONS_KILLED']}-#{summoner['ASSISTS']}-#{summoner['NUM_DEATHS']}) as #{character} "
+    out_parts << " (#{summoner['CHAMPIONS_KILLED']}-#{summoner['NUM_DEATHS']}-#{summoner['ASSISTS']}) as #{character} "
     out_parts << " on #{game['mode']} #{game['when']}. " 
     out_parts << " #{ENDPOINT} "
     output = out_parts.join(' ')
