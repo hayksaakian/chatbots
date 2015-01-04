@@ -159,7 +159,7 @@ EM.run {
           p_message = parsed_message["data"]
           chatter_name = parsed_message["nick"]
         end
-        if !baderror and !MODERATION.ignored?(chatter_name) and !p_message.nil? and p_message.is_a?(String)
+        if !baderror and !MODERATION.ignored?(chatter_name) and !parsed_message.nil? and !p_message.nil? and p_message.is_a?(String)
           if parsed_message.has_key?('messageid')
             # if we got a PM, mark as read!
             read_endpoint = "http://www.destiny.gg/profile/messages/openall"
