@@ -57,12 +57,11 @@ class LolStats
       if !cached.has_key?('json')
         raise "Failed to GET LoL data from lolking"
       else
-        jsn["date"] ||= Time.now.to_i
-        setcached(ENDPOINT, jsn)
+        cached["date"] ||= Time.now.to_i
+        setcached(ENDPOINT, cached)
       end
     end
-    jsn = cached["json"]
-    game = jsn[0]
+    game = cached["json"][0]
     result = game['win'] ? 'won' : 'lost'
     summoner = game['match']['summoner']
     character = summoner['champion_name']
