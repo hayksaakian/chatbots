@@ -52,7 +52,10 @@ PROTOCOLS = nil
 RATE_LIMIT = ENV.fetch('RATE_LIMIT', 14) # seconds
 ENV['last_time'] = '0'
 
-def ready(command)
+# TODO come up with a smarter throttle
+# that allows calls via whispers more often
+# without enabling whispers to dodge all throttling
+def ready(command, opts={})
   now = Time.now.to_i
   if (command != GLOBALS['last_command']) or (now - ENV['last_time'].to_i > RATE_LIMIT)
     ENV['last_time'] = now.to_s
@@ -160,7 +163,9 @@ EM.run {
           chatter_name = parsed_message["nick"]
         end
         if !baderror and !MODERATION.ignored?(chatter_name) and !parsed_message.nil? and !p_message.nil? and p_message.is_a?(String)
+          nothrottle = false
           if parsed_message.has_key?('messageid')
+            nothrottle = true
             # if we got a PM, mark as read!
             read_endpoint = "http://www.destiny.gg/profile/messages/openall"
             uri = URI(read_endpoint)
@@ -180,7 +185,9 @@ EM.run {
               cmd = p_message.split(' ').first
               # for legacy api
               chatbot.last_message = GLOBALS["last_message"] if chatbot.respond_to?(:last_message=)
-              result = ready(cmd) ? chatbot.check(p_message) : nil
+              # TODO: replay to the @chatter via whisper 
+              # if the same !command is called multiple times quickly 
+              result = (nothrottle or ready(cmd)) ? chatbot.check(p_message) : nil
               if !result.nil? and result.length > 0
                 result << suffix
                 # check for safety
