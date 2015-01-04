@@ -44,7 +44,7 @@ class LolStats
     # expire cache if...
     if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
       page = Nokogiri::HTML(open("http://www.lolking.net/summoner/na/26077457#matches"))
-      parts = page.split("\n")
+      parts = page.text.split("\n")
       histories = parts.select{|s| !s.match("var history =").nil?}
       if histories.length > 0
         history = histories.first.strip
