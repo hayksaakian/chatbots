@@ -54,7 +54,7 @@ class LolStats
         jdata = JSON.parse(raw_jsn)
         cached["json"] = jdata
       end
-      if jsn.nil?
+      if !cached.has_key?('json')
         raise "Failed to GET LoL data from lolking"
       else
         jsn["date"] ||= Time.now.to_i
