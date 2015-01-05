@@ -113,6 +113,7 @@ class OverrustleFetcher
             channel = kvs[1] if kvs[0] == 'stream'
           end
           platform = platform == 'twitch-vod' ? 'v' : platform[0]
+          platform = platform == 'youtube-playlist' ? 'l' : platform[0]
           sl[0] = "#{short_domain}/#{platform}/#{channel}"
         end
       end
