@@ -52,6 +52,7 @@ class Reddit
     msg = pluralize(comment.score, 'point') + " "
     msg << tweet_time_ago(comment.created_at) + " ago: "
     msg << HTMLEntities.new.decode(comment.body).truncate(COMMENT_LENGTH, separator: ' ')
+    msg << " np.reddit.com/r/#{comment.subreddit}/comments/#{comment.link_id.split('_').last}/full/#{comment.id}?context=3"
   end
 
   def tweet_time_ago(from_time, to_time = Time.now)
