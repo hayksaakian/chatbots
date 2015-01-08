@@ -17,6 +17,10 @@ class OverrustleFetcher
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
+  WEIRD_NAMES = {
+    'youtube-playlist' => 'l',
+    'twitch-vod' => 'v'
+  }
 
   attr_accessor :regex, :last_message, :chatter
   def initialize
@@ -93,29 +97,22 @@ class OverrustleFetcher
     list_of_lists = list_of_lists.map do |sl|
       u = URI.parse(sl[0])
       # puts u.path
-      if !['/destinychat', '/channel'].include?(u.path)
-        sl[0] = "overrustle.com" + sl[0]
-      else
-        parts = u.query.split('&')
-        if u.path == '/channel'
-          channel = ""
-          parts.each do |pt|
-            kvs = pt.split("=")
-            channel = kvs[1] if kvs[0] == 'user'
-          end
-          sl[0] = "#{short_domain}/#{channel}"
-        elsif u.path == '/destinychat'
-          channel = ""
-          platform = ""
-          parts.each do |pt|
-            kvs = pt.split("=")
-            platform = kvs[1] if kvs[0] == 's'
-            channel = kvs[1] if kvs[0] == 'stream'
-          end
-          platform = platform == 'twitch-vod' ? 'v' : platform[0]
-          platform = platform == 'youtube-playlist' ? 'l' : platform[0]
-          sl[0] = "#{short_domain}/#{platform}/#{channel}"
+      parts = u.query.split('&')
+      if u.path == '/channel'
+        channel = ""
+        parts.each do |pt|
+          kvs = pt.split("=")
+          channel = kvs[1] if kvs[0] == 'user'
         end
+        sl[0] = "#{short_domain}/#{channel}"
+      elsif u.path == '/destinychat'
+        mk = jsn['metaindex'][sl[0]]
+        md = jsn['metadata'][mk]
+        platform = md['platform']
+        platform = WEIRD_NAMES[platform]
+        platform ||= md['platform'][0]
+
+        sl[0] = "#{short_domain}/#{platform}/#{md['channel']}"
       end
       # puts sl
       sl
