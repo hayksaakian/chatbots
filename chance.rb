@@ -145,12 +145,16 @@ class Chance
       end
     elsif query =~ /^!sta/
       return stand
-    elsif query =~ /^!bet/
+    elsif query =~ /^!bet/ or query =~ /^!double/
       parts = query.split(' ')
-      if(parts.length > 1)
-        return bet(parts[1].to_i)
+      if query =~ /^!double/
+        return bet(game['bet'].to_i)
       else
-        return "You must provide an amount to bet"
+        if(parts.length > 1)
+          return bet(parts[1].to_i)
+        else
+          return "You must provide an amount to bet"
+        end
       end
     elsif query =~ /^!purse/
       return "/w #{@chatter} Ð#{game['purse']} chips in your purse #{WHISPER_SUFFIX}"
