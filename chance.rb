@@ -235,7 +235,7 @@ class Chance
     while d.value < 17 do
       d.hit      
     end
-    if h.value > d.value
+    if h.value > d.value or d.bust?
       # player wins
       op = "#{@chatter} wins Abathur"
       game['purse'] += (game['bet']*2)
