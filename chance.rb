@@ -222,7 +222,7 @@ class Chance
       rv << "#{@chatter} You hit #{show}. #{WHISPER_SUFFIX}"
     end
     rv << "Ð#{game['purse']} left"
-    return "/w rv"
+    return "/w #{rv}"
     # TODO: would the dealer draw right now?
   end
   
