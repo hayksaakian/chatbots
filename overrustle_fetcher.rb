@@ -104,6 +104,7 @@ class OverrustleFetcher
       elsif u.path == '/destinychat'
         mk = jsn['metaindex'][sl[0]]
         md = jsn['metadata'][mk]
+        next if md.nil? 
         platform = md['platform']
         platform = WEIRD_NAMES[platform]
         platform ||= md['platform'][0]
