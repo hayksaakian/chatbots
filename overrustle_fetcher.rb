@@ -51,15 +51,15 @@ class OverrustleFetcher
 
     apid = getjson("https://api.twitch.tv/kraken/streams/destiny")
     if !apid.nil? and apid.has_key?('stream')
-      if !apid['stream'].nil? and self.strims_enabled == true
-        output = "Destiny is live at destiny.gg/bigscreen playing #{apid['stream']['game']} for #{apid['stream']['viewers'].to_s}, !strims is disabled until Destiny goes offline"
+      if !apid['stream'].nil?
+        output = "Destiny is live at destiny.gg/bigscreen playing #{apid['stream']['game']} for #{apid['stream']['viewers'].to_s} viewers, !strims is disabled until Destiny goes offline"
         self.strims_enabled = false
       elsif apid['stream'].nil? and self.strims_enabled == false
         self.strims_enabled = true
       end
     end
 
-    return output if self.strims_enabled == false
+    return output if !self.strims_enabled
 
     # TODO: don't return anything if destiny is live
     output = "Top 3 OverRustle.com strims: "
