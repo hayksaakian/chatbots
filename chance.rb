@@ -219,10 +219,10 @@ class Chance
       game['done'] = true
       rv << "#{@chatter} busted! #{show}. "
     else
-      rv << "/w #{@chatter} You hit #{show}. #{WHISPER_SUFFIX}"
+      rv << "#{@chatter} You hit #{show}. #{WHISPER_SUFFIX}"
     end
     rv << "Ð#{game['purse']} left"
-    return rv
+    return "/w rv"
     # TODO: would the dealer draw right now?
   end
   
@@ -246,7 +246,7 @@ class Chance
       game['purse'] += game['bet']
     end
     game['done'] = true
-    return "#{op} #{show} Ð#{game['purse']} left"
+    return "/w #{op} #{show} Ð#{game['purse']} left"
   end
 
   def show(gm=nil)
