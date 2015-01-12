@@ -119,8 +119,10 @@ class Moderation
         end
       elsif query =~ /^!notify/i
         if parts.length > 1
-          httpget("#{API_ENDPOINT}/notify/#{parts[1]}")
-          return "/me Attention Rustlers: #{parts[1]}"
+          parts.delete_at(0)
+          rce = parts.join(' ')
+          httppost("#{API_ENDPOINT}/notify", {"message" => rce})
+          return "/me Attention Rustlers: #{rce}"
         end
       elsif query =~ /^!reload/i
         if parts.length > 1
