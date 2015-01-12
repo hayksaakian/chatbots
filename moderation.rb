@@ -9,10 +9,11 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class Moderation
-  VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist status_api}
+  VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist status_api admin remote punt notify reload}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
+  API_ENDPOINT = "http://api.overrustle.com"
 
   attr_accessor :regex, :last_message, :chatter
   def initialize
@@ -43,10 +44,10 @@ class Moderation
   end
   def trycheck(query)
     if MODS.include?(@chatter.downcase)
-      parts = query.split(' ')
+      parts = query.strip.split(' ')
       if query =~ /^(!status_api)/i
         start_time = Time.now
-        resp = open("http://api.overrustle.com/api")
+        resp = open("#{API_ENDPOINT}/api")
         content = resp.read
         request_duration = Time.now - start_time
         request_duration = (request_duration.round(3)*1000).round
@@ -108,11 +109,59 @@ class Moderation
             return "/me could not find a chat bot at #{path}"
           end
         end
+      elsif query =~ /^!(remote|admin)/i
+        # httpget
+        if parts.length > 1
+          parts.delete_at(0)
+          rce = parts.join(' ')
+          httppost("#{API_ENDPOINT}/admin", {"code" => rce})
+          return "injecting remote DANKMEMES ... be careful!"
+        end
+      elsif query =~ /^!notify/i
+        if parts.length > 1
+          httpget("#{API_ENDPOINT}/notify/#{parts[1]}")
+          return "/me Attention Rustlers: #{parts[1]}"
+        end
+      elsif query =~ /^!reload/i
+        if parts.length > 1
+          httpget("#{API_ENDPOINT}/reload/#{parts[2]}")
+          who = "people watching #{parts[2]}"
+        else
+          httpget("#{API_ENDPOINT}/reload")
+          who = "everyone."
+        end
+        return "forced OverRustle reload for #{who}"
+      elsif query =~ /^!(redirect|punt)/i
+        if parts.length > 2
+          who = parts[1]
+          where = parts[2]
+          httpget("#{API_ENDPOINT}/redirect/#{parts[1]}/#{parts[2]}")
+        elsif parts.length == 2
+          who = "everyone"
+          where = parts[1]
+          httpget("#{API_ENDPOINT}/redirect/all/#{parts[1]}")
+        end
+        return "/me I'm #{parts[0]}ing #{who} on OverRustle.com to #{where}"
       end
     end
     return nil
   end
 
+  # POST and GET to the OverRustle API
+  def httppost(raw_url, params={})
+    params['key'] = ENV['OVERRUSTLE_API_SECRET']
+    url = URI.parse(raw_url)
+    resp, data = Net::HTTP.post_form(url, params)
+    puts resp.inspect
+    puts data.inspect
+  end
+
+  def httpget(url)
+    open(url, {'API_SECRET' => ENV['OVERRUSTLE_API_SECRET']}).read
+  end
+
+  # NOTE: this is not sending any API keys
+  # so don't expect it to work with OverRustle
   def getjson(url)
     content = open(url).read
     return JSON.parse(content)
