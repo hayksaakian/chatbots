@@ -126,9 +126,9 @@ class Moderation
         end
       elsif query =~ /^!reload/i
         if parts.length > 1
-          httppost("#{API_ENDPOINT}/admin/redirect", {"who" => parts[1]})
+          httppost("#{API_ENDPOINT}/admin/reload", {"who" => parts[1]})
         else
-          httppost("#{API_ENDPOINT}/admin/redirect", {})
+          httppost("#{API_ENDPOINT}/admin/reload", {})
         end
         parts.delete_at(0)
         return "forced OverRustle reload for #{parts[0] ? parts[0] : 'everyone'}"
