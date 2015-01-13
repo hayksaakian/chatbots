@@ -130,14 +130,21 @@ class Moderation
         else
           httppost("#{API_ENDPOINT}/admin/redirect", {})
         end
-        return "forced OverRustle reload for #{who}"
+        parts.delete_at(0)
+        return "forced OverRustle reload for #{parts[0] ? parts[0] : 'everyone'}"
       elsif query =~ /^!(redirect|punt)/i
         if parts.length > 2
-          httppost("#{API_ENDPOINT}/admin/redirect", {"who" => parts[1], "to" =>parts[2]})
+          who = parts[1]
+          to = parts[2]
+          httppost("#{API_ENDPOINT}/admin/redirect", {"who" => who, "to" => to})
         elsif parts.length == 2
+          who = "everyone"
+          to = parts[1]
           httppost("#{API_ENDPOINT}/admin/redirect", {"to" => parts[1]})
         end
-        return "/me I'm #{parts[0]}ing #{who} on OverRustle.com to #{where}"
+        if parts.length > 1
+          return "/me I'm #{parts[0]}ing #{who}'s viewers on OverRustle.com to #{to}"
+        end
       end
     end
     return nil
