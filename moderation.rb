@@ -126,22 +126,16 @@ class Moderation
         end
       elsif query =~ /^!reload/i
         if parts.length > 1
-          httpget("#{API_ENDPOINT}/admin/reload/#{parts[2]}")
-          who = "people watching #{parts[2]}"
+          httppost("#{API_ENDPOINT}/admin/redirect", {"who" => parts[1]})
         else
-          httpget("#{API_ENDPOINT}/admin/reload")
-          who = "everyone."
+          httppost("#{API_ENDPOINT}/admin/redirect", {})
         end
         return "forced OverRustle reload for #{who}"
       elsif query =~ /^!(redirect|punt)/i
         if parts.length > 2
-          who = parts[1]
-          where = parts[2]
-          httpget("#{API_ENDPOINT}/admin/redirect/#{parts[1]}/#{parts[2]}")
+          httppost("#{API_ENDPOINT}/admin/redirect", {"who" => parts[1], "to" =>parts[2]})
         elsif parts.length == 2
-          who = "everyone"
-          where = parts[1]
-          httpget("#{API_ENDPOINT}/admin/redirect/all/#{parts[1]}")
+          httppost("#{API_ENDPOINT}/admin/redirect", {"to" => parts[1]})
         end
         return "/me I'm #{parts[0]}ing #{who} on OverRustle.com to #{where}"
       end
