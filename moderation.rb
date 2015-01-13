@@ -152,10 +152,11 @@ class Moderation
   # POST and GET to the OverRustle API
   def httppost(raw_url, params={})
     params['key'] = ENV['OVERRUSTLE_API_SECRET']
+    json_headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
     url = URI.parse(raw_url)
-    resp, data = Net::HTTP.post_form(url, params)
-    puts resp.inspect
-    puts data.inspect
+    http = Net::HTTP.new(uri.host, uri.port)
+    response = http.post(uri.path, params.to_json, json_headers)
+    puts response.inspect
   end
 
   def httpget(url)
