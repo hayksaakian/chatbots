@@ -153,7 +153,7 @@ class Moderation
   def httppost(raw_url, params={})
     params['key'] = ENV['OVERRUSTLE_API_SECRET']
     json_headers = {"Content-Type" => "application/json", "Accept" => "application/json"}
-    url = URI.parse(raw_url)
+    uri = URI.parse(raw_url)
     http = Net::HTTP.new(uri.host, uri.port)
     response = http.post(uri.path, params.to_json, json_headers)
     puts response.inspect
