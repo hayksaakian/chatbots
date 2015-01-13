@@ -121,15 +121,15 @@ class Moderation
         if parts.length > 1
           parts.delete_at(0)
           rce = parts.join(' ')
-          httppost("#{API_ENDPOINT}/notify", {"message" => rce})
+          httppost("#{API_ENDPOINT}/admin/notify", {"message" => rce})
           return "/me Attention Rustlers: #{rce}"
         end
       elsif query =~ /^!reload/i
         if parts.length > 1
-          httpget("#{API_ENDPOINT}/reload/#{parts[2]}")
+          httpget("#{API_ENDPOINT}/admin/reload/#{parts[2]}")
           who = "people watching #{parts[2]}"
         else
-          httpget("#{API_ENDPOINT}/reload")
+          httpget("#{API_ENDPOINT}/admin/reload")
           who = "everyone."
         end
         return "forced OverRustle reload for #{who}"
@@ -137,11 +137,11 @@ class Moderation
         if parts.length > 2
           who = parts[1]
           where = parts[2]
-          httpget("#{API_ENDPOINT}/redirect/#{parts[1]}/#{parts[2]}")
+          httpget("#{API_ENDPOINT}/admin/redirect/#{parts[1]}/#{parts[2]}")
         elsif parts.length == 2
           who = "everyone"
           where = parts[1]
-          httpget("#{API_ENDPOINT}/redirect/all/#{parts[1]}")
+          httpget("#{API_ENDPOINT}/admin/redirect/all/#{parts[1]}")
         end
         return "/me I'm #{parts[0]}ing #{who} on OverRustle.com to #{where}"
       end
