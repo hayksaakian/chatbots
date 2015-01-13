@@ -9,7 +9,7 @@ require 'similar_text'
 include ActionView::Helpers::DateHelper
 
 class Moderation
-  VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist status_api admin remote punt notify reload}
+  VALID_WORDS = %w{blacklist_nospace ignore unignore unblacklist status_api admin remote punt notify reload featur}
   MODS = %w{iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
@@ -132,6 +132,11 @@ class Moderation
         end
         parts.delete_at(0)
         return "forced OverRustle reload for #{parts[0] ? parts[0] : 'everyone'}"
+      elsif query =~ /^!featur/i
+        if parts.length > 1
+          httppost("#{API_ENDPOINT}/admin/feature", {"who" => parts[1]})
+          return "Check out this stream: rustle.club/#{parts[1]}"
+        end
       elsif query =~ /^!(redirect|punt)/i
         if parts.length > 2
           who = parts[1]
