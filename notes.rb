@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class Notes
   VALID_WORDS = %w{help set release transfer commands mycommands}
-  WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza mikecom32 littlebill902}.map { |wu| wu.downcase }
+  WHITELISTED_USERS = %w{hephaestus 13hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza mikecom32 littlebill902}.map { |wu| wu.downcase }
   RATE_LIMIT = 7 # seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/commands/"
