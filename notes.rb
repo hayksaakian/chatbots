@@ -10,12 +10,12 @@ include ActionView::Helpers::DateHelper
 
 class Notes
   VALID_WORDS = %w{help set release transfer commands mycommands}
-  WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza mikecom32}
+  WHITELISTED_USERS = %w{hephaestus iliedaboutcake righttobeararmslol destiny sztanpet ceneza mikecom32 littlebill902}.map { |wu| wu.downcase }
   RATE_LIMIT = 7 # seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/commands/"
 
-  attr_accessor :chatter
+  attr_accessor :chatter, :last_message, :from_pm
   def initialize
     @last_message = ""
   end
@@ -31,9 +31,10 @@ class Notes
     if @last_message.similar(m) >= 97
       # it's too similar. so it will get the bot banned
       m = "I literally just said that, #{@chatter}. "
-      m << %w{MotherFuckinGame UWOTM8 NoTears CallCatz}.sample
+      m << %w{MotherFuckinGame UWOTM8 NoTears}.sample
     end
     @last_message = m
+    m = "/w #{@chatter} #{m}" if @from_pm
     return m
   rescue Exception => e
     puts e.message

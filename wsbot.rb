@@ -165,8 +165,10 @@ EM.run {
         end
         if !baderror and !MODERATION.ignored?(chatter_name) and !parsed_message.nil? and !p_message.nil? and p_message.is_a?(String)
           nothrottle = false
+          from_pm = false
           if parsed_message.has_key?('messageid')
             nothrottle = true
+            from_pm = true
             # if we got a PM, mark as read!
             read_endpoint = "http://www.destiny.gg/profile/messages/openall"
             uri = URI(read_endpoint)
@@ -179,7 +181,8 @@ EM.run {
           end
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
-              if chatbot.respond_to?(:chatter=) 
+              chatbot.from_pm = from_pm if chatbot.respond_to?(:from_pm=)
+              if chatbot.respond_to?(:chatter=)
                 chatbot.chatter = chatter_name
                 puts "set chatter name to #{chatter_name}"
               end
