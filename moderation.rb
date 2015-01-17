@@ -133,22 +133,31 @@ class Moderation
         parts.delete_at(0)
         return "forced OverRustle reload for #{parts[0] ? parts[0] : 'everyone'}"
       elsif query =~ /^!featur/i
+        qparams = {}
+        if parts.length > 2
+          qparams['who'] = parts[1]
+          qparams['to'] = parts[2]
+        elsif parts.length == 2
+          qparams['who'] = parts[1]
+        end
+        httppost("#{API_ENDPOINT}/admin/feature", qparams)
+        qparams['to'] = "people watching "+qparams['to'] if qparams['to']
+        qparams['to'] ||= 'everyone'
         if parts.length > 1
-          httppost("#{API_ENDPOINT}/admin/feature", {"who" => parts[1]})
-          return "Check out this stream: rustle.club/#{parts[1]}"
+          return "Hey, #{qparams['to']}, check out this stream: rustle.club/#{qparams['who']}"
         end
       elsif query =~ /^!(redirect|punt)/i
+        qparams = {}
         if parts.length > 2
-          who = parts[1]
-          to = parts[2]
-          httppost("#{API_ENDPOINT}/admin/redirect", {"who" => who, "to" => to})
+          qparams['who'] = parts[1]
+          qparams['to'] = parts[2]
         elsif parts.length == 2
-          who = "everyone"
-          to = parts[1]
-          httppost("#{API_ENDPOINT}/admin/redirect", {"to" => parts[1]})
+          qparams['to'] = parts[1]
         end
+        httppost("#{API_ENDPOINT}/admin/redirect", qparams)
+        qparams['who'] ||= everyone
         if parts.length > 1
-          return "/me I'm #{parts[0]}ing #{who}'s viewers on OverRustle.com to #{to}"
+          return "/me I'm #{parts[0]}ing #{qparams['who']}'s viewers on OverRustle.com to #{qparams['to']}"
         end
       end
     end
