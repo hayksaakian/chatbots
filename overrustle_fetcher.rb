@@ -146,7 +146,7 @@ class OverrustleFetcher
     content = Net::HTTP.start(url.host, use_ssl: use_ssl, ssl_version: 'SSLv3', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
       http.get url.request_uri
     end
-    return JSON.parse(content)
+    return JSON.parse(content.body)
   end
 
   def strims_enabled
