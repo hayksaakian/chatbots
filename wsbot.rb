@@ -183,6 +183,7 @@ EM.run {
           CHATBOTS.each do |chatbot|
             if p_message.match(chatbot.regex)
               chatbot.from_pm = from_pm if chatbot.respond_to?(:from_pm=)
+              chatbot.msg_meta = parsed_message if chatbot.respond_to?(:msg_meta=)
               if chatbot.respond_to?(:chatter=)
                 chatbot.chatter = chatter_name
                 puts "set chatter name to #{chatter_name}"
