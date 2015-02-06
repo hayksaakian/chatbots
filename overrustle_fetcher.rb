@@ -39,6 +39,7 @@ class OverrustleFetcher
     " OverRustle Tell hephaestus or iliedaboutcake something broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
+    output = ""
     saved_filter = getcached("chat_filter") || []
     # if MODS.include?(@chatter.downcase) 
     #   if query =~ /^(!(enable_strims|disable_strims))/i
@@ -48,21 +49,25 @@ class OverrustleFetcher
     #     return "!strims #{word} by #{@chatter}"
     #   end
     # end
-
-    apid = getjson("https://api.twitch.tv/kraken/streams/destiny")
-    if !apid.nil? and apid.has_key?('stream')
-      if !apid['stream'].nil?
-        output = "Destiny is live at destiny.gg/bigscreen playing #{apid['stream']['game']} for #{apid['stream']['viewers'].to_s} viewers, !strims is disabled until Destiny goes offline"
-        self.strims_enabled = false
-      elsif apid['stream'].nil? and self.strims_enabled == false
-        self.strims_enabled = true
+    begin
+      apid = getjson("https://api.twitch.tv/kraken/streams/destiny")
+      if !apid.nil? and apid.has_key?('stream')
+        if !apid['stream'].nil?
+          output = "Destiny is live at destiny.gg/bigscreen playing #{apid['stream']['game']} for #{apid['stream']['viewers'].to_s} viewers, !strims is disabled until Destiny goes offline"
+          self.strims_enabled = false
+        elsif apid['stream'].nil? and self.strims_enabled == false
+          self.strims_enabled = true
+        end
       end
+      return output if !self.strims_enabled
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.join("\n")
+      output << "(problems with twitch api) "
     end
 
-    return output if !self.strims_enabled
-
     # TODO: don't return anything if destiny is live
-    output = "Top 3 OverRustle.com strims: "
+    output << "Top 3 OverRustle.com strims: "
     # cached = getcached(ENDPOINT)
     # expire cache if...
     jsn = getjson(ENDPOINT)
