@@ -15,7 +15,8 @@ class OverrustleFetcher
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
-  LINE_WIDTH = 42
+  LINE_WIDTH = 55
+  WCHAR = "_"
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
   WEIRD_NAMES = {
@@ -125,7 +126,7 @@ class OverrustleFetcher
       _op = "\n#{sl[0]} has #{sl[1]} | "
       to_add = LINE_WIDTH - _op.length
       if to_add > 0
-        _op << to_add.times.map{|x| "-"}.join
+        _op << to_add.times.map{|x| WCHAR}.join
       end
       output << _op
     end
@@ -142,7 +143,7 @@ class OverrustleFetcher
         _op = "\n#{sl[0]} has #{sl[1]} | "
         to_add = LINE_WIDTH - _op.length
         if to_add > 0
-          _op << to_add.times.map{|x| "-"}.join
+          _op << to_add.times.map{|x| WCHAR}.join
         end
         output << _op
       end
