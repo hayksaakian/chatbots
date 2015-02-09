@@ -32,6 +32,7 @@ CLASSES = %w{
   fortune
   chance
   lol_stats
+  broadcaster
 }
 
 CLASSES.each do |c|
