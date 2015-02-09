@@ -15,6 +15,7 @@ class OverrustleFetcher
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
+  LINE_WIDTH = 42
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
   WEIRD_NAMES = {
@@ -121,7 +122,12 @@ class OverrustleFetcher
     end
 
     list_of_lists.take(3).each do |sl|
-      output << "\n#{sl[0]} has #{sl[1]} | "
+      _op = "\n#{sl[0]} has #{sl[1]} | "
+      to_add = LINE_WIDTH - _op.length
+      if to_add > 0
+        _op << to_add.times.map{|x| "-"}.join
+      end
+      output << _op
     end
     if list_of_lists.length > 3
       wildcard = list_of_lists.drop(3).sample
@@ -131,10 +137,14 @@ class OverrustleFetcher
     # it's too similar. so it will get the bot banned
     # get the next 3
     if @last_message.similar(output) >= 90
-      output = "Top 3 via Overrustle.com/strims"
-      output << " #3 to #1  :"
-      list_of_lists.take(3).reverse.each do |sl|
-        output << " \n#{sl[0]} has #{sl[1]} | "
+      output = "Top 3 via Overrustle.com/strims #3 to #1 :"
+      list_of_lists.take(3).reverse.each do |sl|      
+        _op = "\n#{sl[0]} has #{sl[1]} | "
+        to_add = LINE_WIDTH - _op.length
+        if to_add > 0
+          _op << to_add.times.map{|x| "-"}.join
+        end
+        output << _op
       end
     end
 
