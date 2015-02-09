@@ -36,7 +36,7 @@ class Broadcaster
   def pickone
     phrases = [
       "#{ENDPOINT} WORTH $#{MINIMUM.to_s} to get your Message read by Robot Lady",
-      "Click for DANKMEMES: #{ENDPOINT}  Robot Lady will read messages on donations over than #{MINIMUM.to_s} dollars",
+      "Click for DANKMEMES : #{ENDPOINT}  Robot Lady will read messages on donations over than #{MINIMUM.to_s} dollars",
       "Min. $#{MINIMUM.to_s} donation for Robot Lady to read it! Donation Link: #{ENDPOINT}",
       "Robot Lady will read your DANKMEMES for at least $#{MINIMUM.to_s} donations. Donate Here: #{ENDPOINT}"
     ]
