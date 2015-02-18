@@ -21,7 +21,8 @@ class OverrustleFetcher
   CACHE_FILE = APP_ROOT+"/cache/"
   WEIRD_NAMES = {
     'youtube-playlist' => 'l',
-    'twitch-vod' => 'v'
+    'twitch-vod' => 'v',
+    'nsfw-chaturbate' => 'n'
   }
 
   attr_accessor :regex, :last_message, :chatter
@@ -113,8 +114,7 @@ class OverrustleFetcher
         md = jsn['metadata'][mk]
         next if md.nil? 
         platform = md['platform']
-        platform = WEIRD_NAMES[platform]
-        platform ||= md['platform'][0]
+        platform = WEIRD_NAMES[platform.downcase] ? platform.downcase : md['platform'][0]
 
         sl[0] = "#{short_domain}/#{platform}/#{md['channel']}"
       end
