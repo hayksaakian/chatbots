@@ -62,6 +62,7 @@ class LolStats
       end
     end
     game = cached["json"][0]
+    # might not have good json
     result = game['win'] ? 'won' : 'lost'
     summoner = game['match']['summoner']
     character = summoner['champion_name']
