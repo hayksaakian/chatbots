@@ -15,7 +15,7 @@ class OverrustleFetcher
   FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
-  LINE_WIDTH = 55
+  LINE_WIDTH = 57
   WCHAR = "_"
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
