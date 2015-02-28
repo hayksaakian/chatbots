@@ -17,6 +17,7 @@ class OverrustleFetcher
   CACHE_DURATION = 60 #seconds
   LINE_WIDTH = 57
   WCHAR = "_"
+  WCHAR2 = "-"
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
   WEIRD_NAMES = {
@@ -138,12 +139,12 @@ class OverrustleFetcher
     # it's too similar. so it will get the bot banned
     # get the next 3
     if @last_message.similar(output) >= 90
-      output = "Top 3 via Overrustle.com/strims #4 to #6 "
-      list_of_lists.drop(3).take(3).each do |sl|      
+      output = "Top 3 via Overrustle.com/strims #3 to #1 "
+      list_of_lists.take(3).each do |sl|      
         _op = "\n#{sl[0]} has #{sl[1]} | "
         to_add = LINE_WIDTH - _op.length
         if to_add > 0
-          _op << to_add.times.map{|x| WCHAR}.join
+          _op << to_add.times.map{|x| WCHAR2}.join
         end
         output << _op
       end
