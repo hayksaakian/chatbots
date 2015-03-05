@@ -9,7 +9,7 @@ require 'action_view'
 include ActionView::Helpers::DateHelper
 
 class LolStats
-  ENDPOINT = "http://na.op.gg/summoner/userName=NeoDéstiny"
+  ENDPOINT = "http://na.op.gg/summoner/userName=NeoD%C3%A9stiny"
   VALID_WORDS = %w{lol league heimerdonger dravewin surprise}
   RATE_LIMIT = 16 # seconds
   CACHE_DURATION = 60 #seconds
