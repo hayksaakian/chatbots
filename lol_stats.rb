@@ -51,7 +51,7 @@ class LolStats
       cached["mode"] = page.css(".GameBox .GameType .subType")[0].text.split('-').first.gsub("\t", "").gsub("\n", "").strip
       cached["last_win_or_loss"] = page.css(".GameBox .wins")[0].text.strip
       ntzt = page.css(".GameBox ._timeago")[0].text.strip
-      cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0800")
+      cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0700")
       cached["date"] ||= Time.now.to_i
       setcached(ENDPOINT, cached)
     end
@@ -65,7 +65,7 @@ class LolStats
     out_parts = []
     out_parts << " #{summoner} #{result} a game "
     out_parts << " (#{game["kda"]}) as #{character} "
-    out_parts << " on #{game['mode']} #{game['when']} ago. " 
+    out_parts << " in #{game['mode']} #{game['when']} ago. " 
     out_parts << " #{ENDPOINT} "
     output = out_parts.join(' ')
     if output.similar(@last_message) >= 70
