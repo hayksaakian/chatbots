@@ -49,7 +49,7 @@ class LolStats
       cached["win_loss_ratio"] = page.css(".SummonerRankWonLine").text.gsub("All ranked games", "")
       cached["mode"] = page.css(".GameBox .GameType .subType")[0].text.split('-').first.gsub("\t", "").gsub("\n", "")
       cached["last_win_or_loss"] = page.css(".GameBox .wins")[0].text
-      ntzt = page.css(".GameBox ._timeago.tip")[0].text
+      ntzt = page.css(".GameBox ._timeago")[0].text
       cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0600")
       cached["date"] ||= Time.now.to_i
       setcached(ENDPOINT, cached)
