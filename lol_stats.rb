@@ -9,7 +9,7 @@ require 'action_view'
 include ActionView::Helpers::DateHelper
 
 class LolStats
-  ENDPOINT = "http://www.lolking.net/summoner/na/26077457"
+  ENDPOINT = "http://na.op.gg/summoner/userName=NeoDéstiny"
   VALID_WORDS = %w{lol league heimerdonger dravewin surprise}
   RATE_LIMIT = 16 # seconds
   CACHE_DURATION = 60 #seconds
@@ -43,34 +43,27 @@ class LolStats
     cached["date"] ||= 0
     # expire cache if...
     if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
-      page = Nokogiri::HTML(open("http://www.lolking.net/summoner/na/26077457#matches"))
-      parts = page.text.split("\n")
-      histories = parts.select{|s| !s.match("var history =").nil?}
-      if histories.length > 0
-        history = histories.first.strip
-        raw_jsn = history.split("var history = ")[1]
-        # remove ; from end
-        raw_jsn = raw_jsn[0..(raw_jsn.length-2)]
-        jdata = JSON.parse(raw_jsn)
-        cached["json"] = jdata
-      end
-      if !cached.has_key?('json')
-        raise "Failed to GET LoL data from lolking"
-      else
-        cached["date"] ||= Time.now.to_i
-        setcached(ENDPOINT, cached)
-      end
+      page = Nokogiri::HTML(open(ENDPOINT))
+      cached["kda"] = page.css(".GameStats .kda")[0].text.strip.gsub("\n", " ").gsub("\t", "")
+      cached["champion_name"] = page.css(".GameSimpleStats .championName")[0].text
+      cached["win_loss_ratio"] = page.css(".SummonerRankWonLine").text.gsub("All ranked games", "")
+      cached["mode"] = page.css(".GameBox .GameType .subType")[0].text.split('-').first.gsub("\t", "").gsub("\n", "")
+      cached["last_win_or_loss"] = page.css(".GameBox .wins")[0].text
+      ntzt = page.css(".GameBox ._timeago.tip")[0].text
+      cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0600")
+      cached["date"] ||= Time.now.to_i
+      setcached(ENDPOINT, cached)
     end
-    game = cached["json"][0]
+    game = cached
     # might not have good json
-    result = game['win'] ? 'won' : 'lost'
-    summoner = game['match']['summoner']
-    character = summoner['champion_name']
+    result = game["last_win_or_loss"] =~ /victory/i ? 'won' : 'lost'
+    summoner = "Destiny"
+    character = game['champion_name']
 
     # Destiny lost a solo game on King Sejong Station LE 7h9m ago. sc2ranks.com/character/us/310150/Destiny
     out_parts = []
-    out_parts << " #{summoner['name']} #{result} a game "
-    out_parts << " (#{summoner['CHAMPIONS_KILLED']}-#{summoner['NUM_DEATHS']}-#{summoner['ASSISTS']}) as #{character} "
+    out_parts << " #{summoner} #{result} a game "
+    out_parts << " (#{game["kda"]}) as #{character} "
     out_parts << " on #{game['mode']} #{game['when']}. " 
     out_parts << " #{ENDPOINT} "
     output = out_parts.join(' ')
