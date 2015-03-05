@@ -44,20 +44,20 @@ class LolStats
     cached["date"] ||= 0
     # expire cache if...
     if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
-      page = Nokogiri::HTML(open(ENDPOINT, 'User-Agent' => UA))
+      page = Nokogiri::HTML(open(ENDPOINT, 'User-Agent' => UA, 'Accept-Language' => 'en-GB,en-US;q=0.8,en;q=0.6'))
       cached["kda"] = page.css(".GameStats .kda")[0].text.strip.gsub("\n", " ").gsub("\t", "")
       cached["champion_name"] = page.css(".GameSimpleStats .championName")[0].text
       cached["win_loss_ratio"] = page.css(".SummonerRankWonLine").text.gsub("All ranked games", "")
       cached["mode"] = page.css(".GameBox .GameType .subType")[0].text.split('-').first.gsub("\t", "").gsub("\n", "")
       cached["last_win_or_loss"] = page.css(".GameBox .wins")[0].text
       ntzt = page.css(".GameBox ._timeago")[0].text
-      cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0600")
+      cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0300")
       cached["date"] ||= Time.now.to_i
       setcached(ENDPOINT, cached)
     end
     game = cached
     # might not have good json
-    result = game["last_win_or_loss"] =~ /victory/i ? 'won' : 'lost'
+    result = game["last_win_or_loss"]
     summoner = "Destiny"
     character = game['champion_name']
 
