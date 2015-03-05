@@ -10,6 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class LolStats
   ENDPOINT = "http://na.op.gg/summoner/userName=NeoD%C3%A9stiny"
+  UA = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36"
   VALID_WORDS = %w{lol league heimerdonger dravewin surprise}
   RATE_LIMIT = 16 # seconds
   CACHE_DURATION = 60 #seconds
@@ -43,7 +44,7 @@ class LolStats
     cached["date"] ||= 0
     # expire cache if...
     if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
-      page = Nokogiri::HTML(open(ENDPOINT))
+      page = Nokogiri::HTML(open(ENDPOINT, 'User-Agent' => UA))
       cached["kda"] = page.css(".GameStats .kda")[0].text.strip.gsub("\n", " ").gsub("\t", "")
       cached["champion_name"] = page.css(".GameSimpleStats .championName")[0].text
       cached["win_loss_ratio"] = page.css(".SummonerRankWonLine").text.gsub("All ranked games", "")
