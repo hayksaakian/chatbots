@@ -41,7 +41,7 @@ class Logs
   def trycheck(query)
     part1 = query.split(' ')[1]
     unless part1.nil?
-      part1 = "/#{Time.now.strftime('%B %Y')}/userlogs/#{part1}.txt"
+      part1 = "#{Time.now.strftime('%B %Y').gsub(' ', '%20')}/userlogs/#{part1}.txt"
     end    
     return "#{ENDPOINT}#{part1}"
   end
