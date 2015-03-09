@@ -43,7 +43,7 @@ class Logs
     unless part1.nil?
       part1 = "/#{Time.now.strftime('%B %Y')}/userlogs/#{part1}.txt"
     end    
-    return "#{ENDPOINT}#{parts1}"
+    return "#{ENDPOINT}#{part1}"
   end
 
   def getjson(url)
