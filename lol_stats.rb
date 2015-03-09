@@ -37,7 +37,7 @@ class LolStats
     m << "\n\n --->"
     m << e.backtrace.join("\n|\n")
     puts m
-    " Heimerdonger tell hephaestus something broke. Exception: #{e.message.to_s}"
+    " Heimerdonger tell hephaestus something broke with !lol. Exception: #{e.message.to_s}"
   end
   def trycheck(query)
     cached = getcached(ENDPOINT) || {}
