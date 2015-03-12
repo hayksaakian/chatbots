@@ -49,9 +49,10 @@ class LolStats
       cached["champion_name"] = page.css(".GameSimpleStats .championName")[0].text.strip
       cached["win_loss_ratio"] = page.css(".SummonerRankWonLine").text.gsub("All ranked games", "").strip
       cached["mode"] = page.css(".GameBox .GameType .subType")[0].text.split('-').first.gsub("\t", "").gsub("\n", "").strip
-      cached["last_win_or_loss"] = page.css(".GameBox .wins")[0].text.strip
+      cached["last_win_or_loss"] = page.css(".GameBox .gameResult")[0].text.strip
+      cached["rank"] = page.css(".tierRank").text.strip
       ntzt = page.css(".GameBox ._timeago")[0].text.strip
-      cached["when"] = time_ago_in_words Time.parse("#{ntzt} +0700")
+      cached["when"] = Time.parse("#{ntzt} +0600")
       cached["date"] ||= Time.now.to_i
       setcached(ENDPOINT, cached)
     end
@@ -65,7 +66,8 @@ class LolStats
     out_parts = []
     out_parts << " #{summoner} #{result} a game "
     out_parts << " (#{game["kda"]}) as #{character} "
-    out_parts << " in #{game['mode']} #{game['when']} ago. " 
+    out_parts << " ranked #{game["rank"]} "
+    out_parts << " in #{game['mode']} #{time_ago_in_words(game['when'])} ago. " 
     out_parts << " #{ENDPOINT} "
     output = out_parts.join(' ')
     if output.similar(@last_message) >= 70
