@@ -133,7 +133,7 @@ class OverrustleFetcher
     end
     if list_of_lists.length > 3
       wildcard = list_of_lists.drop(3).sample
-      output << " \nWild Card - #{wildcard[0]}"
+      output << " \nWild Card - #{wildcard[0]}" unless wildcard.nil?
     end
 
     # it's too similar. so it will get the bot banned
