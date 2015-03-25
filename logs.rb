@@ -39,11 +39,18 @@ class Logs
     " Heimerdonger tell hephaestus something broke with logs. Exception: #{e.message.to_s}"
   end
   def trycheck(query)
-    part1 = query.split(' ')[1]
-    unless part1.nil?
-      part1 = "#{Time.now.strftime('%B %Y').gsub(' ', '%20')}/userlogs/#{part1}.txt"
-    end    
-    return "#{ENDPOINT}#{part1}"
+    name = query.split(' ')[1]
+    part1 = ""
+    unless name.nil?
+      part1 = "#{Time.now.strftime('%B %Y').gsub(' ', '%20')}/userlogs/#{name}.txt"
+    end
+    logs_link = "#{ENDPOINT}#{part1}"
+    begin
+      open(logs_link)
+      return logs_link
+    rescue Exception => e
+      return "No logs for #{name}"
+    end
   end
 
   def getjson(url)
