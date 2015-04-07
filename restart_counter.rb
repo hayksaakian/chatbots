@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class RestartCounter
   MODS = %w{
-    waterlord0 kittybomber savage_swiftrage
+    waterlord0 kittybomber savage_swiftrage volqfer_ 
     iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   ENDPOINT = "restart_counter"
   VALID_WORDS = %w{restart counter reset death}
