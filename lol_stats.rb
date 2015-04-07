@@ -52,7 +52,7 @@ class LolStats
       cached["last_win_or_loss"] = page.css(".GameBox .gameResult")[0].text.strip
       cached["rank"] = page.css(".tierRank").text.strip
       ntzt = page.css(".GameBox ._timeago")[0].text.strip
-      cached["when"] = Time.parse("#{ntzt} +0600")
+      cached["when"] = Time.parse("#{ntzt} +0700")
       cached["date"] ||= Time.now.to_i
       setcached(ENDPOINT, cached)
     end
