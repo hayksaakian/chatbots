@@ -26,11 +26,13 @@ class OverrustleFetcher
     'nsfw-chaturbate' => 'n'
   }
 
-  attr_accessor :regex, :last_message, :chatter
+  attr_accessor :regex, :last_message, :chatter, :shortcuts
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
     @chatter = ""
+
+    @shortcuts = getjson("http://api.OverRustle.com/shortcuts.json").invert
   end
   def check(query)
     m = trycheck(query)
@@ -115,8 +117,7 @@ class OverrustleFetcher
         md = jsn['metadata'][mk]
         next if md.nil? 
         platform = md['platform']
-        platform = WEIRD_NAMES[platform.downcase] ? platform.downcase : md['platform'][0]
-
+        platform = @shortcuts.has_key?(platform.downcase) ? @shortcuts[platform.downcase] : md['platform'][0]
         sl[0] = "#{short_domain}/#{platform}/#{md['channel']}"
       end
       # puts sl
