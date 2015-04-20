@@ -98,7 +98,7 @@ class LolStats
     out_parts << " #{summoner} #{result} a game "
     out_parts << " (#{game["kda"]}) as #{character} "
     out_parts << " ranked #{game["rank"]} "
-    out_parts << " in #{game['mode']} started #{time_ago_in_words(game['when'])} ago. " 
+    out_parts << " in #{game['mode']} #{time_ago_in_words(game['when'])} ago. " 
     out_parts << " #{USER_ENDPOINT} "
     output = out_parts.join(' ')
     if output.similar(@last_message) >= 70
