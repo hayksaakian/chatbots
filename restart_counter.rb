@@ -13,7 +13,7 @@ class RestartCounter
     waterlord0 kittybomber savage_swiftrage volqfer_ 
     iliedaboutcake hephaestus 13hephaestus rustlebot bot destiny ceneza sztanpet}.map{|m| m.downcase}
   ENDPOINT = "restart_counter"
-  VALID_WORDS = %w{restart counter reset}
+  VALID_WORDS = %w{restart counter reset death}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
