@@ -27,9 +27,9 @@ class LolStats
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     cl = getjson(CHAMPION_ENDPOINT)
-    @champions_names = {}
+    @champion_names = {}
     cl['data'].each do |code_name, details|
-      @champions_names[details['id']] = details['name']
+      @champion_names[details['id']] = details['name']
     end
   end
   def ready
@@ -59,7 +59,7 @@ class LolStats
       # https://na.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/NA1/26077457
       # to see if a game is live
       # and show different stats
-      
+
       page = getjson(ENDPOINT)
       recent_game = page["games"][0]
       recent_stats = recent_game['stats']
