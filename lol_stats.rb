@@ -72,7 +72,7 @@ class LolStats
       cached["rank"] = "#{rank_stats['tier']} #{rank_stats['entries'][0]['division']}"
       cached["rank"] += " #{rank_stats['entries'][0]['leaguePoints']}/100 LP"
       cached["win_loss_ratio"] = "#{rank_stats['entries'][0]['wins']} / #{rank_stats['entries'][0]['losses']}"
-      cached["when"] = Time.at(recent_game["createDate"].to_f / 1000.000)
+      cached["when"] = Time.at(recent_stats['timePlayed'].to_f + (recent_game["createDate"].to_f / 1000.000))
       cached["date"] ||= Time.now.to_i
 
       # page = Nokogiri::HTML(open(ENDPOINT, 'User-Agent' => UA, 'Accept-Language' => 'en-GB,en-US;q=0.8,en;q=0.6'))
