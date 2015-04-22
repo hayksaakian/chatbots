@@ -42,7 +42,7 @@ class OverrustleFetcher
     m = trycheck(query)
     if @live_changed
       pushdata = { :alert => m, :is_live => !self.strims_enabled }
-      push = Parse::Push.new(pushdata, "twitch.destiny")
+      push = Parse::Push.new(pushdata, "twitch-_-destiny")
       push.save
     end
     @last_message = m
