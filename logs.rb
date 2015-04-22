@@ -52,7 +52,7 @@ class Logs
     if name.nil?
       return "#{HUMAN_ENDPOINT}/#{Time.now.strftime('%B %Y').gsub(' ', '%20')}"
     elsif @names.has_key?(name.downcase)
-      return @names[name.downcase]
+      return @names[name.downcase]['url']
     else
       return "No logs for #{name}"
     end
