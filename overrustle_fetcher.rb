@@ -6,7 +6,7 @@ require 'cgi'
 require 'digest'
 require 'action_view'
 require 'similar_text'
-# require 'parse-ruby-client'
+require 'parse-ruby-client'
 include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
