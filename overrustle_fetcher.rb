@@ -6,7 +6,7 @@ require 'cgi'
 require 'digest'
 require 'action_view'
 require 'similar_text'
-require 'parse-ruby-client'
+# require 'parse-ruby-client'
 include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
@@ -35,14 +35,14 @@ class OverrustleFetcher
     @live_changed = false
 
     @shortcuts = getjson("http://api.OverRustle.com/shortcuts.json").invert
-    Parse.init(:application_id => ENV["PARSECOM_APP_ID"],
-           :api_key => ENV["PARSECOM_API_KEY"])
+    Parse.init({:application_id => ENV["PARSECOM_APP_ID"],
+           :api_key => ENV["PARSECOM_API_KEY"]})
   end
   def check(query)
     m = trycheck(query)
     if @live_changed
-      data = { :alert => m, :is_live => !self.strims_enabled }
-      push = Parse::Push.new(data, "twitch.destiny")
+      pushdata = { :alert => m, :is_live => !self.strims_enabled }
+      push = Parse::Push.new(pushdata, "twitch.destiny")
       push.save
     end
     @last_message = m
@@ -79,7 +79,6 @@ class OverrustleFetcher
         # TODO: protect against flip/flopping bugs
         # that cause tons of messages to be sent
         @live_changed = lse != self.strims_enabled
-        end
       end
       return output if !self.strims_enabled
     rescue Exception => e
