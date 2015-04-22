@@ -9,16 +9,20 @@ require 'action_view'
 include ActionView::Helpers::DateHelper
 
 class Logs
-  ENDPOINT = "http://overrustlelogs.net/Destinygg%20chatlog/"
+  ENDPOINT = "http://overrustlelogs.net/destinygg"
+  HUMAN_ENDPOINT = "http://overrustlelogs.net/Destinygg%20chatlog/"
   VALID_WORDS = %w{log chatlog}
   RATE_LIMIT = 16 # seconds
+  NAME_UPDATE_FREQUENCY = 60
   # CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
-  attr_accessor :regex, :last_message
+  attr_accessor :regex, :last_message, :last_name_update, :names
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
+    @names = getjson(ENDPOINT)
+    @last_name_update = Time.now.to_i
   end
   def ready
     last_time = @last_time || 0
@@ -35,20 +39,21 @@ class Logs
     m = e.message
     m << "\n\n --->"
     m << e.backtrace.join("\n|\n")
+
     puts m
     " Heimerdonger tell hephaestus something broke with logs. Exception: #{e.message.to_s}"
   end
   def trycheck(query)
     name = query.split(' ')[1]
-    part1 = ""
-    unless name.nil?
-      part1 = "#{Time.now.strftime('%B %Y').gsub(' ', '%20')}/userlogs/#{name}.txt"
+    if Time.now.to_i - @last_name_update > NAME_UPDATE_FREQUENCY
+      @last_name_update = Time.now.to_i
+      @names = getjson(ENDPOINT)        
     end
-    logs_link = "#{ENDPOINT}#{part1}"
-    begin
-      open(logs_link)
-      return logs_link
-    rescue Exception => e
+    if name.nil?
+      return "#{HUMAN_ENDPOINT}/#{Time.now.strftime('%B %Y').gsub(' ', '%20')}"
+    elsif @names.has_key?(name.downcase)
+      return @names[name.downcase]
+    else
       return "No logs for #{name}"
     end
   end
