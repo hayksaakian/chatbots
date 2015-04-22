@@ -6,6 +6,7 @@ require 'cgi'
 require 'digest'
 require 'action_view'
 require 'similar_text'
+require 'parse-ruby-client'
 include ActionView::Helpers::DateHelper
 
 class OverrustleFetcher
@@ -26,16 +27,24 @@ class OverrustleFetcher
     'nsfw-chaturbate' => 'n'
   }
 
-  attr_accessor :regex, :last_message, :chatter, :shortcuts
+  attr_accessor :regex, :last_message, :chatter, :shortcuts, :live_changed
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
     @last_message = ""
     @chatter = ""
+    @live_changed = false
 
     @shortcuts = getjson("http://api.OverRustle.com/shortcuts.json").invert
+    Parse.init(:application_id => ENV["PARSECOM_APP_ID"],
+           :api_key => ENV["PARSECOM_API_KEY"])
   end
   def check(query)
     m = trycheck(query)
+    if @live_changed
+      data = { :alert => m, :is_live => !self.strims_enabled }
+      push = Parse::Push.new(data, "twitch.destiny")
+      push.save
+    end
     @last_message = m
     return m
   rescue Exception => e
@@ -58,11 +67,18 @@ class OverrustleFetcher
     begin
       apid = getjson("https://api.twitch.tv/kraken/streams/destiny")
       if !apid.nil? and apid.has_key?('stream')
+        lse = self.strims_enabled
         if !apid['stream'].nil?
           output = "Destiny is live at destiny.gg/bigscreen playing #{apid['stream']['game']} for #{apid['stream']['viewers'].to_s} viewers, !strims is disabled until Destiny goes offline"
           self.strims_enabled = false
         elsif apid['stream'].nil? and self.strims_enabled == false
           self.strims_enabled = true
+        end
+        # safeguard against sending the same message
+        # too many times
+        # TODO: protect against flip/flopping bugs
+        # that cause tons of messages to be sent
+        @live_changed = lse != self.strims_enabled
         end
       end
       return output if !self.strims_enabled

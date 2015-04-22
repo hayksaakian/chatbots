@@ -17,3 +17,4 @@ gem 'youtube_search'
 gem 'blackjack1'
 
 gem 'jsonable'
+gem 'parse-ruby-client'
