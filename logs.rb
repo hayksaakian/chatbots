@@ -10,7 +10,7 @@ include ActionView::Helpers::DateHelper
 
 class Logs
   ENDPOINT = "http://overrustlelogs.net/destinygg"
-  HUMAN_ENDPOINT = "http://overrustlelogs.net/Destinygg%20chatlog/"
+  HUMAN_ENDPOINT = "http://overrustlelogs.net/Destinygg%20chatlog"
   VALID_WORDS = %w{log chatlog}
   RATE_LIMIT = 16 # seconds
   NAME_UPDATE_FREQUENCY = 60
