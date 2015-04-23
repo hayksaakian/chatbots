@@ -13,7 +13,7 @@ class Logs
   HUMAN_ENDPOINT = "http://overrustlelogs.net/Destinygg%20chatlog"
   VALID_WORDS = %w{log chatlog}
   RATE_LIMIT = 16 # seconds
-  NAME_UPDATE_FREQUENCY = 60
+  NAME_UPDATE_FREQUENCY = 60*5
   # CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
