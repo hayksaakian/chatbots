@@ -50,7 +50,7 @@ class Logs
       @names = getjson(ENDPOINT)        
     end
     if name.nil?
-      return "#{HUMAN_ENDPOINT}/#{Time.now.strftime('%B %Y').gsub(' ', '%20')}"
+      return "#{HUMAN_ENDPOINT}/#{Time.now.strftime('%B %Y').gsub(' ', '%20')}/"
     elsif @names.has_key?(name.downcase)
       return @names[name.downcase]['url']
     else
