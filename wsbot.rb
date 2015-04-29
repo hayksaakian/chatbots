@@ -35,6 +35,7 @@ CLASSES = %w{
   logs
   broadcaster
   restart_counter
+  search
 }
 
 CLASSES.each do |c|
