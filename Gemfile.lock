@@ -70,6 +70,7 @@ GEM
     rottentomatoes (1.1.0)
       deepopenstruct (>= 0.1.2)
       json
+    searchbing (0.2.4)
     similar_text (0.0.4)
     thread_safe (0.3.4)
     tzinfo (1.2.2)
@@ -97,5 +98,6 @@ DEPENDENCIES
   parse-ruby-client
   redditkit (~> 1.0.2)
   rottentomatoes
+  searchbing
   similar_text
   youtube_search
