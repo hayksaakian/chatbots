@@ -21,7 +21,7 @@ class Logs
   attr_accessor :regex, :last_message, :last_name_update, :names
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
-    @names = getjson(ENDPOINT)
+    @names = getjson(ENDPOINT)['users']
     @last_name_update = Time.now.to_i
   end
   def ready
@@ -47,7 +47,7 @@ class Logs
     name = query.split(' ')[1]
     if Time.now.to_i - @last_name_update > NAME_UPDATE_FREQUENCY
       @last_name_update = Time.now.to_i
-      @names = getjson(ENDPOINT)        
+      @names = getjson(ENDPOINT)['users']        
     end
     if name.nil?
       return "#{HUMAN_ENDPOINT}/#{Time.now.strftime('%B %Y').gsub(' ', '%20')}/"
