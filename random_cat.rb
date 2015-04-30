@@ -9,12 +9,13 @@ require 'action_view'
 include ActionView::Helpers::DateHelper
 
 class RandomCat
-  EMOTES = %w{MotherFuckinGame KINGSLY CallCatz}
+  EMOTES = %w{MotherFuckinGame KINGSLY CallCatz randomcat}
   ENDPOINT = "https://api.imgur.com/2/album/W8TvQ/images.json"
   VALID_WORDS = %w{randomcat randomkingsly KINGSLY MotherFuckinGame CallCatz}
   CACHE_DURATION = 60*3 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
+  MOD_ONLY = true
 
   attr_accessor :regex, :chatter
   def initialize

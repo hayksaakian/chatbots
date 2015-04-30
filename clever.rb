@@ -10,14 +10,12 @@ require 'cleverbot'
 include ActionView::Helpers::DateHelper
 
 class Clever
-  ENDPOINT = "http://overrustle.com:6081/api"
   VALID_WORDS = %w{rustlebot clever}
-  MODS = %w{iliedaboutcake hephaestus 13hephaestus bot destiny ceneza sztanpet}.map{|m| m.downcase}
-  FILTERED_STRIMS = %w{clickerheroes s=advanced strawpoii}
   RATE_LIMIT = 32 # seconds
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
+  MOD_ONLY = true
 
   attr_accessor :regex, :last_message, :chatter
   def initialize
@@ -36,9 +34,7 @@ class Clever
     " NoTears Tell hephaestus something broke with !rustlebot. Exception: #{m.to_s}"
   end
   def trycheck(query)
-    # TODO filter input
-    saved_filter = getcached("chat_filter") || []
-
+    
     parts = query.split(' ')
     parts.delete_at(0)
     query = parts.join(' ')

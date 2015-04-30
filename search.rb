@@ -19,6 +19,7 @@ class Search
   CACHE_FILE = APP_ROOT+"/cache/"
   MAX_LENGTH = 256
   NUM_RESULTS = 10
+  MOD_ONLY = true
 
   attr_accessor :regex, :last_message, :chatter
   def initialize

@@ -15,6 +15,10 @@ class Moderation
   CACHE_FILE = APP_ROOT+"/cache/"
   API_ENDPOINT = "http://api.overrustle.com"
 
+  def is_mod?(chatter)
+    return MODS.include?(chatter.downcase)
+  end
+
   attr_accessor :regex, :last_message, :chatter
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i
@@ -25,6 +29,7 @@ class Moderation
     thelist = self.baddies || []
     return thelist.include?(name)
   end
+  # remove filtered lines
   def safe?(line)
     thelist = self.chat_filter || []
     thelist.each do |l|
