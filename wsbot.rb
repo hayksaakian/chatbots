@@ -36,6 +36,8 @@ CLASSES = %w{
   broadcaster
   restart_counter
   search
+  cat_api
+  clever
 }
 
 CLASSES.each do |c|
