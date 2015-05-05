@@ -26,6 +26,7 @@ class OverrustleFetcher
     'twitch-vod' => 'v',
     'nsfw-chaturbate' => 'n'
   }
+  SHORT_DOMAIN = "rustle.club"
 
   attr_accessor :regex, :last_message, :chatter, :shortcuts, :live_changed
   def initialize
@@ -115,7 +116,6 @@ class OverrustleFetcher
     to_remove.reverse.each{|tr| list_of_lists.delete_at(tr)}
     # puts list_of_lists
     # map to sexy urls
-    short_domain = "rustle.club"
     list_of_lists = list_of_lists.map do |sl|
       u = URI.parse(sl[0])
       # puts u.path
@@ -126,14 +126,14 @@ class OverrustleFetcher
           kvs = pt.split("=")
           channel = kvs[1] if kvs[0] == 'user'
         end
-        sl[0] = "#{short_domain}/#{channel}"
+        sl[0] = "#{SHORT_DOMAIN}/#{channel}"
       elsif u.path == '/destinychat'
         mk = jsn['metaindex'][sl[0]]
         md = jsn['metadata'][mk]
         next if md.nil? 
         platform = md['platform']
         platform = @shortcuts.has_key?(platform.downcase) ? @shortcuts[platform.downcase] : md['platform'][0]
-        sl[0] = "#{short_domain}/#{platform}/#{md['channel']}"
+        sl[0] = "#{SHORT_DOMAIN}/#{platform}/#{md['channel']}"
       end
       # puts sl
       sl

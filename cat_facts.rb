@@ -12,7 +12,7 @@ class CatFacts
   FACTS_PER_REQUEST = 10
   ENDPOINT = "http://catfacts-api.appspot.com/api/facts?number=#{FACTS_PER_REQUEST}"
   # TODO: get more at once, and cache them for faster facts
-  VALID_WORDS = %w{catfacts}
+  VALID_WORDS = %w{catfact}
   CACHE_DURATION = 60 #seconds
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"

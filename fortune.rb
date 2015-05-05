@@ -32,6 +32,7 @@ class Fortune
     "Highly unlikely",
     "Maybe in your imagination"
   ]
+  MOD_ONLY = true
 
   attr_accessor :regex, :last_message, :chatter
   def initialize

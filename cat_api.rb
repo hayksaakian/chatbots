@@ -10,7 +10,8 @@ include ActionView::Helpers::DateHelper
 
 class CatApi
   ENDPOINT = "http://thecatapi.com/api/images/get"
-  VALID_WORDS = %w{randomcat}
+  VALID_WORDS = %w{MotherFuckinGame CallCatz randomcat}
+  MOD_ONLY = true
 
   attr_accessor :regex, :last_message
   def initialize
@@ -26,11 +27,11 @@ class CatApi
     puts e.message
     puts e.backtrace.join("\n")
     m = e.message
-    "KINGSLY Uh oh... Tell hephaestus !randomcat broke. Exception: #{m.to_s}"
+    "CallCatz Uh oh... Tell hephaestus !randomcat broke. Exception: #{m.to_s}"
   end
   def trycheck(query)
     r = Net::HTTP.get_response(URI.parse(ENDPOINT))
-    output = %w{KINGSLY MotherFuckinGame CallCatz DappaKappa DuckerZ DestiSenpaii}.sample
+    output = %w{MotherFuckinGame CallCatz DappaKappa DuckerZ DestiSenpaii}.sample
     output << " #{r['location']}"
     return output
   end
