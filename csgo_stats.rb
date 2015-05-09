@@ -9,8 +9,8 @@ require 'action_view'
 include ActionView::Helpers::DateHelper
 
 class CsgoStats
-  ENDPOINT = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/?ajax&uptodate"
-  HUMAN_LINK = "http://csgo-stats.com/llllIIIllIIIlIIIIlllIIII/"
+  ENDPOINT = "http://csgo-stats.com/destinygg/?ajax&uptodate"
+  HUMAN_LINK = "http://csgo-stats.com/destinygg/"
   VALID_WORDS = %w{cs csgo counterstrike ayyylmao sotriggered}
   RATE_LIMIT = 16 # seconds
   CACHE_DURATION = 60 #seconds
@@ -65,11 +65,12 @@ class CsgoStats
     lmparts = lmtxt.split('/')
     wins = lmparts[0].to_i
     losses = lmparts[1].split(' ')[0].to_i - wins
+    rounds = lmparts[1].split(" ")[0]
     # contains lifetime stats
     misc_data = parsed_html.css('#misc').children[3].children[3]
     # matches won / played
     overall = "#{misc_data.children[15].text.chomp} / #{misc_data.children[11].text.chomp}"
-    return "Destiny #{result} a game #{wins}-#{losses} (#{lmtxt} rounds) (#{overall} games won overall) #{HUMAN_LINK}"
+    return "Destiny #{result} a game #{wins}-#{losses} (#{rounds} rounds) (#{overall} games won overall) #{HUMAN_LINK}"
     # output << " as of "
     # output << time_ago_in_words(Time.at(jsn["date"]))
     # output << " ago"
