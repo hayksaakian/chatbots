@@ -34,6 +34,14 @@ class Fortune
   ]
   MOD_ONLY = true
 
+  MOD_EXCEPTIONS = [
+    "saraghz"
+  ]
+
+  def is_mod?(name)
+    MOD_EXCEPTIONS.include?(name)
+  end
+
   attr_accessor :regex, :last_message, :chatter
   def initialize
     @regex = /^!(#{VALID_WORDS.join('|')})/i

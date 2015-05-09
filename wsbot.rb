@@ -193,8 +193,14 @@ EM.run {
                 chatbot.chatter = chatter_name
                 puts "set chatter name to #{chatter_name}"
               end
-              if chatbot.class.constants.include?(:MOD_ONLY) and chatbot.class::MOD_ONLY and !MODERATION.is_mod?(chatter_name.downcase)
-                next
+              if chatbot.class.constants.include?(:MOD_ONLY) and chatbot.class::MOD_ONLY 
+                if MODERATION.is_mod?(chatter_name.downcase)
+                  # no next
+                elsif chatbot.respond_to?(:is_mod?)
+                  next unless chatbot.is_mod?(chatter_name.downcase)
+                else 
+                  next
+                end
               end
               cmd = p_message.split(' ').first
               # for legacy api
