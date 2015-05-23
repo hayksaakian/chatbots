@@ -21,11 +21,7 @@ class OverrustleFetcher
   WCHAR2 = "-"
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
-  WEIRD_NAMES = {
-    'youtube-playlist' => 'l',
-    'twitch-vod' => 'v',
-    'nsfw-chaturbate' => 'n'
-  }
+
   SHORT_DOMAIN = "rustle.club"
 
   attr_accessor :regex, :last_message, :chatter, :shortcuts, :live_changed
@@ -95,51 +91,38 @@ class OverrustleFetcher
     jsn = getjson(ENDPOINT)
 
     filtered_strims = FILTERED_STRIMS + saved_filter
-    strims = jsn["streams"]
-    list_of_lists = strims.sort_by{|k,v| -(v).to_i}
+    stream_list = jsn['stream_list']
     # filter:
     to_remove = []
-    list_of_lists.each_with_index do |sl, i|
-      if sl[0] =~ /(#{filtered_strims.join('|')})/i
+    stream_list.each_with_index do |sl, i|
+      if sl.key?('name') and sl['name'] =~ /(#{filtered_strims.join('|')})/i
         to_remove << i
-      else
-        if jsn.key?('metaindex') and jsn['metaindex'].key?(sl[0])
-          metakey = jsn['metaindex'][sl[0]]
-          if jsn['metadata'].key?(metakey)
-            md = jsn['metadata'][metakey]
-            to_remove << i if (md.key?('live') and md['live'] == false)
-          end
-        end
+      elsif sl.key?('channel') and sl['channel'] =~ /(#{filtered_strims.join('|')})/i
+        to_remove << i
+      elsif sl.key?('live') and sl['live'] == false)
+        to_remove << i 
       end
     end
     # go from back to front so the index doesn't mess up
-    to_remove.reverse.each{|tr| list_of_lists.delete_at(tr)}
-    # puts list_of_lists
-    # map to sexy urls
-    list_of_lists = list_of_lists.map do |sl|
-      u = URI.parse(sl[0])
-      # puts u.path
-      parts = u.query.split('&')
-      if u.path == '/channel'
-        channel = ""
-        parts.each do |pt|
-          kvs = pt.split("=")
-          channel = kvs[1] if kvs[0] == 'user'
-        end
-        sl[0] = "#{SHORT_DOMAIN}/#{channel}"
-      elsif u.path == '/destinychat'
-        mk = jsn['metaindex'][sl[0]]
-        md = jsn['metadata'][mk]
-        next if md.nil? 
-        platform = md['platform']
-        platform = @shortcuts.has_key?(platform.downcase) ? @shortcuts[platform.downcase] : md['platform'][0]
+    to_remove.reverse.each{|tr| stream_list.delete_at(tr)}
+    # puts stream_list
+
+    # map to touples of (short_url, viewers)
+    snippet_list = stream_list.map do |md|
+      sl = []
+      if md.key?('name')
+        sl[0] = "#{SHORT_DOMAIN}/#{md['name']}"
+      elsif md.key?('channel') and md.key?('platform')
+        platform = md['platform'].downcase
+        platform = @shortcuts[platform] if @shortcuts.key?(platform)
         sl[0] = "#{SHORT_DOMAIN}/#{platform}/#{md['channel']}"
       end
+      sl[1] = md['rustlers']
       # puts sl
       sl
     end
 
-    list_of_lists.take(3).each do |sl|
+    snippet_list.take(3).each do |sl|
       _op = "\n#{sl[0]} has #{sl[1]} | "
       to_add = LINE_WIDTH - _op.length
       if to_add > 0
@@ -147,8 +130,8 @@ class OverrustleFetcher
       end
       output << _op
     end
-    if list_of_lists.length > 3
-      wildcard = list_of_lists.drop(3).sample
+    if snippet_list.length > 3
+      wildcard = snippet_list.drop(3).sample
       output << " \nWild Card - #{wildcard[0]}" unless wildcard.nil?
     end
 
@@ -156,7 +139,7 @@ class OverrustleFetcher
     # get the next 3
     if @last_message.similar(output) >= 90
       output = "Top 3 via Overrustle.com/strims #3 to #1 "
-      list_of_lists.take(3).each do |sl|      
+      snippet_list.take(3).reverse.each do |sl|      
         _op = "\n#{sl[0]} has #{sl[1]} | "
         to_add = LINE_WIDTH - _op.length
         if to_add > 0
