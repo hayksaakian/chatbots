@@ -99,7 +99,7 @@ class OverrustleFetcher
         to_remove << i
       elsif sl.key?('channel') and sl['channel'] =~ /(#{filtered_strims.join('|')})/i
         to_remove << i
-      elsif sl.key?('live') and sl['live'] == false)
+      elsif sl.key?('live') and sl['live'] == false
         to_remove << i 
       end
     end
