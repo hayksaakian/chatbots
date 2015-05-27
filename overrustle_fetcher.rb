@@ -22,7 +22,7 @@ class OverrustleFetcher
   APP_ROOT = File.expand_path(File.dirname(__FILE__))
   CACHE_FILE = APP_ROOT+"/cache/"
 
-  SHORT_DOMAIN = "rustle.club"
+  SHORT_DOMAIN = "overrustle.com"
 
   attr_accessor :regex, :last_message, :chatter, :shortcuts, :live_changed
   def initialize
@@ -114,7 +114,7 @@ class OverrustleFetcher
         sl[0] = "#{SHORT_DOMAIN}/#{md['name']}"
       elsif md.key?('channel') and md.key?('platform')
         platform = md['platform'].downcase
-        platform = @shortcuts[platform] if @shortcuts.key?(platform)
+        # platform = @shortcuts[platform] if @shortcuts.key?(platform)
         sl[0] = "#{SHORT_DOMAIN}/#{platform}/#{md['channel']}"
       end
       sl[1] = md['rustlers']
