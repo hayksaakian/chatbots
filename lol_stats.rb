@@ -66,7 +66,7 @@ class LolStats
       recent_stats['championsKilled'] = recent_stats['championsKilled'].to_s.length > 0 ? recent_stats['championsKilled'] : "0"
       recent_stats['numDeaths'] = recent_stats['numDeaths'].to_s.length > 0 ? recent_stats['numDeaths'] : "0"
       recent_stats['assists'] = recent_stats['assists'].to_s.length > 0 ? recent_stats['assists'] : "0"
-      cached["kda"] = "(#{recent_stats['championsKilled']} / #{recent_stats['numDeaths']} / #{recent_stats['assists']})"
+      cached["kda"] = "#{recent_stats['championsKilled']} / #{recent_stats['numDeaths']} / #{recent_stats['assists']}"
       cached["champion_name"] = @champion_names[recent_game['championId']]
       cached["mode"] = recent_game['subType']
       cached["last_win_or_loss"] = recent_stats['win']
