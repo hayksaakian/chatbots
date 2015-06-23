@@ -32,7 +32,6 @@ CLASSES = %w{
   fortune
   chance
   lol_stats
-  logs
   broadcaster
   restart_counter
   search
