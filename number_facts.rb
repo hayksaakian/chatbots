@@ -8,7 +8,7 @@ require 'digest'
 require 'action_view'
 include ActionView::Helpers::DateHelper
 
-class CatFacts
+class NumberFacts
   FACTS_PER_REQUEST = 10
   # http://numbersapi.com/random/trivia
   # http://numbersapi.com/random/trivia?notfound=ceil
@@ -37,7 +37,7 @@ class CatFacts
   def trycheck(query)
     return open(ENDPOINT).read
     # temporarily for demo purposes
-    
+
     cached = getcached(ENDPOINT) || {}
     cached["date"] ||= 0
     # expire cache if...
