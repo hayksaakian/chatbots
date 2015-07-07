@@ -37,6 +37,7 @@ CLASSES = %w{
   search
   cat_api
   clever
+  number_facts
 }
 
 CLASSES.each do |c|
