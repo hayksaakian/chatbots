@@ -44,7 +44,7 @@ class NumberFacts
     if cached["date"].to_i < (Time.now.to_i - CACHE_DURATION)
       jsn = getjson(ENDPOINT)
       if jsn.nil?
-        raise "Failed to GET Cat Facts"
+        raise "Failed to GET Number Facts"
       else
         jsn["date"] ||= Time.now.to_i
         setcached(ENDPOINT, jsn)
