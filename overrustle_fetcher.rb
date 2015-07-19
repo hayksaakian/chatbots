@@ -159,7 +159,7 @@ class OverrustleFetcher
   def getjson(url)
     use_ssl = url.index("https") == 0
     url = URI.parse(url)
-    content = Net::HTTP.start(url.host, use_ssl: use_ssl, ssl_version: 'SSLv3', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
+    content = Net::HTTP.start(url.host, use_ssl: use_ssl, ssl_version: 'TLSv1_2', verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
       http.get url.request_uri
     end
     return JSON.parse(content.body)
